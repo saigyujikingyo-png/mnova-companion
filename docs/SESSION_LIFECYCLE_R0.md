@@ -97,6 +97,7 @@ An isolated Console candidate remains conditional on verified invocation,
 licensing and process isolation. No such isolation or entitlement is accepted.
 Sending a vendor report is a separate external communication; no report was sent.
 
-Portable regression results are recorded in `STATUS.md`. Current-device plugin
-installation and the earlier cloud-core check retain their previously recorded
-scope; this adapter is not included in the installed runtime wheel.
+Portable regression results are recorded in `STATUS.md`; the [cloud receipt](CLOUD_SETUP.md)
+also covers the exact disabled-harness code revision `9effac3`. Current-device
+plugin installation retains its previously recorded scope; this adapter is not
+included in the installed runtime wheel.

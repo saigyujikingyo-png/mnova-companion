@@ -31,12 +31,12 @@ installed or copied into the container.
 | Gate | State | Evidence |
 | --- | --- | --- |
 | Environment creation and saved setting readback | READY | Saved environment detail and edit pages show the matching repository and configuration. |
-| Interactive container setup and maintenance | READY | On `e861d5297e8d9c1c17284998c25bb8ae363cacde`, Python 3.12.13 installed 35 locked packages; the subsequent maintenance script audited the same 35 packages. The UI reported `Test complete`. |
-| Portable tests on the implementation commit | READY | The actual cloud checkout was `e861d5297e8d9c1c17284998c25bb8ae363cacde` and clean before and after checks. Ruff, formatting, 52 tests plus 42 subtests, contracts, MCP stdio smoke and source release preflight passed; four Windows-only tests were skipped on Linux. |
+| Interactive container setup and maintenance | READY | Latest checked code revision `9effac312d355bb569a3352676c7761bdfb3b6d1`: Python 3.12.13 installed 35 locked packages; maintenance audited the same 35. UI reported `Test complete`; original saved commands were restored and read back. |
+| Portable tests on the implementation commit | READY | Exact `9effac312d355bb569a3352676c7761bdfb3b6d1`, clean before/after: Ruff, formatting, 171 tests plus 42 subtests, contracts, actual MCP stdio and source preflight passed; four Windows-only tests skipped. |
 | Environment selector readback | READY | The Codex Cloud composer listed `Chembridge / Mnova Companion`; selecting it exposed `codex/initial-preview` as the selected branch. No task was submitted. |
 | Actual model-based cloud task | UNVERIFIED | No task was created for this setup check. |
 | Desktop dispatch to the environment | UNVERIFIED | Not exercised by environment creation. |
-| Native MestReNova execution and editability | SEPARATE FAILED LIFECYCLE GATE | The native owner recorded a cross-engine document-destruction crash (`c0000409`). Native mutations remain disabled. Cloud setup does not resolve or supersede that failure; save/reopen/export remain unaccepted. |
+| Native MestReNova execution and editability | SEPARATE FAILED LIFECYCLE GATE | Both the earlier standalone cleanup and the later session R0 creation stage failed. Native mutations remain disabled. Cloud checks do not resolve either failure; see [R0 result](SESSION_LIFECYCLE_R0.md). |
 | Agent host and end-user artifact delivery | UNVERIFIED | Require separate host and file-receipt checks. |
 
 Configuration and portable cloud checks establish development readiness only.
@@ -67,7 +67,7 @@ settings were changed and no duplicate environment was created. If this happens
 again, check the existing account submenu before concluding that the original
 environment needs to be recreated.
 
-### Actual cloud verification
+### Earlier core verification
 
 The newly provisioned cloud checkout already contained the requested commit, so
 no reset, checkout overwrite or pull was needed. A bounded script first printed
@@ -127,3 +127,40 @@ For future checks, inspect the cloud checkout for user changes before updating
 it, preserve unrelated work, and record the actual checked-out commit. Cloud
 verification of later revisions requires a corresponding run; this receipt
 does not automatically cover commits made after the recorded SHA.
+
+## R0 implementation checkpoint: latest cloud verification
+
+The existing recovered browser session accessed the same environment directly.
+No account exploration, new environment or model task was needed. Its official
+setup-test route provisioned a fresh clone and asserted the exact commit
+**`9effac312d355bb569a3352676c7761bdfb3b6d1`** and clean working tree before any
+check. This revision includes the disabled R0/R1 harness and current-process
+content-read protection; the installed runtime core is unchanged.
+
+| Check | Observed result | Shell real time |
+| --- | --- | --- |
+| Locked setup | 38 resolved, 35 installed; Python 3.12.13 | 4.728 s |
+| Ruff lint | Passed | 0.125 s |
+| Ruff formatting | 19 files already formatted | 0.065 s |
+| Pytest | 171 passed, 4 Windows-only skips, 42 subtests; pytest 4.25 s | 6.253 s |
+| Contracts | 6 tools; 19,898 UTF-8 schema bytes | 1.036 s |
+| Actual MCP stdio | Structured/text parity and error branches passed | 6.976 s |
+| Source preflight | Tracked manifest/privacy checks passed | 0.234 s |
+
+The script ran from **2026-09-15 19:46:19 UTC to 19:46:39 UTC**, approximately
+20 seconds at the recorded timestamp precision. Container preparation and the
+following maintenance are outside that interval. Git status remained clean.
+Maintenance resolved 38 packages in 21 ms and audited 35 in 2 ms; the UI displayed
+`Test complete`.
+
+Afterward, the temporary setup text was restored. The edit fields and persisted
+detail page showed both setup and maintenance as `bash scripts/setup_codex_cloud.sh`,
+the original repository/image/cache and zero tasks. No temporary harness was
+saved as configuration. Private UI evidence remains outside public source.
+
+For the same `9effac3` revision, independent [GitHub CI](https://github.com/saigyujikingyo-png/mnova-companion/actions/runs/35015234860)
+passed on Windows (175 tests, 44 subtests) and Ubuntu (171 tests, four skips,
+42 subtests). These are separate CI and cloud-container observations. Neither
+executed licensed Mnova, accepted the native crash, invoked a host model or
+verified native artifact delivery. Later documentation-only receipt commits do
+not change the code covered by this recorded run.
