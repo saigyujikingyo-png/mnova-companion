@@ -1,17 +1,16 @@
 {
   "name": "mnova-companion",
   "version": "0.1.0-dev.1",
-  "description": "Development preview of native MestReNova workflows with verified scientific artifacts.",
+  "description": "Development checkpoint: portable MCP contracts, files and jobs; native scientific writes are disabled.",
   "author": {
     "name": "Mnova Companion contributors"
   },
   "license": "MIT",
   "repository": "https://github.com/saigyujikingyo-png/mnova-companion",
-  "skills": "./skills/",
   "interface": {
     "displayName": "Mnova Companion",
-    "shortDescription": "Native NMR workflows in MestReNova.",
-    "longDescription": "Independent development preview. Native execution, host compatibility and artifact delivery have separate acceptance gates.",
+    "shortDescription": "MCP development checkpoint for Mnova.",
+    "longDescription": "Portable source checkpoint with native writes disabled after a lifecycle failure. No end-user installer, host integration or scientific workflow is accepted yet.",
     "developerName": "Mnova Companion contributors",
     "category": "Productivity",
     "capabilities": [],
