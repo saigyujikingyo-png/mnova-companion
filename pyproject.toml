@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mnova-companion"
+version = "0.1.0.dev1"
+description = "Host-neutral MCP workflows for licensed MestReNova"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = "MIT"
+dependencies = ["mcp==2.2.0", "pydantic>=2.11,<3"]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.12,<1", "jsonschema>=4.23,<5"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mnova_companion"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
