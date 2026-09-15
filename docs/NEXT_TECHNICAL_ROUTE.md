@@ -1,12 +1,14 @@
 # Assessment and next technical route
 
-Status: **DESIGN READY; NEXT IMPLEMENTATION NOT STARTED**.
+Status: **R0 IMPLEMENTED AND FAILED; R1 NOT RUN**.
 Date: 2026-09-15. Shared baseline: Chembridge 2026-09-14.1.
 
-The user requested an icon, installation, current-issue repair and assessment,
-followed by a concrete technical plan and a stop before the next coding phase.
-This turn changes branding, installation materials and evidence. It does not
-enable a native backend or begin the next scientific feature implementation.
+The original review delivered the requested icon, installation, assessment and
+technical plan, then stopped before coding. The user subsequently approved the
+next implementation phase. Its bounded R0/R1 harness is now implemented, but the
+first session-creation experiment failed before sentinel ownership was established.
+See the [R0 result and current decision](SESSION_LIFECYCLE_R0.md). Native writes
+remain disabled and the R1 close experiment was not run.
 
 ## 1. Current assessment
 
@@ -18,12 +20,12 @@ incomplete. Six discoverable tools do not imply six accepted scientific workflow
 | Icon and local host wiring | READY on this device | Original icon installed and hash-checked; personal plugin installed/enabled; non-editable runtime verified from outside the checkout. |
 | Portable contracts/files/jobs | READY within tested scope | Existing Windows/Ubuntu CI passed; six installed MCP calls validated. Preserve this core. |
 | Scientific processing | BLOCKED | No accepted raw-data import, processing, integrals, save/reopen or export. Keep native writes disabled. |
-| Native lifetime | UNRESOLVED FAILURE | Old cross-language cleanup failed; a single pure-Python candidate is proposed below. |
+| Native lifetime | R0 FAILED / R1 NOT RUN | Old cross-language cleanup failed; the subsequent Python session-creation candidate also failed before ownership was established. Its temporary JS dirty observer is read-only. |
 | Cloud implementation checks | READY at the checked core revision | Existing browser-account switching restored the original environment without new credentials or a duplicate. Exact e861d52 checkout: 52 tests passed, 4 Windows-only skips, contracts/stdio/source checks passed; configuration restoration is recorded separately in CLOUD_SETUP.md. |
 | Ordinary-user distribution | PARTIAL | Current device runs without a source checkout; the private venv still needs its existing Python base. No standalone installer, update/removal or clean-device acceptance. |
 | Hosts, models and delivery | UNVERIFIED beyond direct local protocol | No new-task model call, Terra max workflow, remote adapter or received native artifact is accepted. |
 
-### Repairs actually completed in this turn
+### Repairs completed before R0 implementation
 
 1. Added and installed the previously missing icon.
 2. Added the local MCP connection and a private non-editable runtime, replacing
@@ -35,9 +37,11 @@ incomplete. Six discoverable tools do not imply six accepted scientific workflow
    readback established the working route. No credentials or duplicate environment
    were needed. See [cloud evidence](CLOUD_SETUP.md).
 
-The native crash has **not** been repaired or retested in this turn. The dangerous
-experimental route had already been removed from public dispatch; keeping it
-disabled is containment, not a new fix. No native process was launched.
+The original native crash has **not** been repaired. A newly implemented session
+candidate was tested after approval and produced a separate creation-stage crash.
+The executed source and unresolved intent are retained privately; both production
+and acceptance mutation entrypoints are disabled. This is containment, not a
+confirmed lifetime repair.
 
 ## 2. Root-cause hypothesis and evidence boundary
 
@@ -70,7 +74,9 @@ so a merely nonempty sentinel cannot count as unsaved-work protection.
 
 Retain the host-neutral Python core, six public tools and typed output contracts.
 Replace the experimental standalone/cross-language lifetime approach with one
-candidate: **session-owned documents, exclusively through Python**.
+candidate: **session-owned creation and closure through Python**, with a temporary
+read-only JS observer for the dirty flag. The first R0 run failed; the route below
+remains unaccepted.
 
 ```mermaid
 flowchart LR
@@ -112,7 +118,7 @@ default. Vendor support contact requires separate authorization to send.
 
 | Stage | Bounded work after approval | Required result before continuing |
 | --- | --- | --- |
-| R0: Resolve native preconditions | Establish supported lifetime/close behavior; create a task-owned sentinel through a real native edit that reads back `isModified=true`. A documented/manual GUI step may be needed for this acceptance fixture; count it explicitly. | Authentic dirty sentinel, exact target identity, supported observation/close semantics. No window-title flag substitute. If unavailable, stop native experiments. |
+| R0: Resolve native preconditions — FAILED | Read-only preflight passed; the first session creation failed before ownership was established. No dirty action ran. | Resolve creation execution-context and ownership before a narrower diagnostic. Authentic dirty sentinel remains required; no window-title flag substitute. |
 | R1: Pure-Python lifetime experiment | Use only task-owned sentinel and target documents; inventory before/after; close only the target once; let Python scope end; execute a later read-only probe. | Only target disappears; sentinel content, dirty state and active selection survive; no unexpected prompt handling, process failure or late destructor failure. |
 | R2: Save and fresh readback | Save a synthetic native result, release it using accepted R1, then load from disk and compare document/spectral semantics. | Nonempty `.mnova`, hash/size, dimensions, nucleus, points, axes, signal and intended annotations match; editability verified. Save exit alone fails this gate. |
 | R3: One 1D vertical workflow | Start with one authorized synthetic/public 1H raw fixture, explicit processing settings, reference and peaks/integrals. Export native document plus PNG/PDF and a table. | Numerical expectations with declared tolerances, unchanged raw bytes, reopen equality, inspected figures and provenance. Add 13C only as a separately checked recipe. |
@@ -138,15 +144,17 @@ turn on all four planned `mnova_run` operations, build a hosted relay, or implem
 full packaging while R0/R1 remain unresolved. Each accepted native operation gets
 its own typed request/result schema before runtime exposure.
 
-The next task's reviewable deliverable is an R0/R1 result and an updated decision
-record. A failed result is useful evidence but does not authorize progression to
-R2. Estimated durations are withheld until native preconditions are resolved.
+The approved task's deliverable is now the implemented harness, focused guard
+tests and [R0 failure/decision record](SESSION_LIFECYCLE_R0.md). The failed result
+does not authorize progression to R1 or R2. Estimated durations remain withheld
+until native preconditions are resolved.
 
-## 6. Handoff and stop
+## 6. Current handoff
 
-Recommendation: approve **R0 followed by R1 only** as the next implementation
-scope; keep the remaining stages conditional. The current user-facing stop is
-intentional: no R0/R1 harness, native lifetime fix or new scientific backend is
-implemented by this planning turn. Cloud access and current-core portable checks
-have been resolved separately. The plan is ready for review before any next-phase
-code begins.
+R0/R1 development was approved. R0 failed and R1 did not start. Preserve the
+creation intent and exact executed source; do not rerun by changing request IDs.
+The next diagnostic must first address the missing execution-context and binding
+ownership evidence, then separate creation, UUID read and post-create observation
+into individual checkpoints. Do not enable save/reopen, scientific operations or
+a hosted relay from this result. Earlier cloud and installed-core evidence remains
+separate from the new native failure.

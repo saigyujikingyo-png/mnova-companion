@@ -114,7 +114,17 @@ disk reopen with semantic/data equality, PDF/PNG/CSV exports, visual inspection,
 and licence/module-specific behavior. Host transport, model behavior, artifact
 delivery, scientific holdouts and release acceptance remain separate.
 
-The subsequent [technical route review](NEXT_TECHNICAL_ROUTE.md) identifies a
-possible stale cross-language wrapper and proposes a session-owned, Python-only
-experiment. That review used documents and prior evidence only; no new native
-execution or repair acceptance supersedes the failure recorded here.
+## Subsequent session-creation experiment
+
+After the [technical route review](NEXT_TECHNICAL_ROUTE.md), the user approved
+R0/R1 development. The new [R0 harness and result](SESSION_LIFECYCLE_R0.md) recorded
+a successful fresh-session snapshot followed by a crash before session sentinel
+ownership was established. No target close was attempted. The failure interval
+contains Python creation, returned UUID access and the first fresh snapshot;
+precise attribution is unknown. The original retained-JS destruction route was
+not repeated. Both native failures remain unaccepted and independently recorded.
+
+The new harness is outside the installed wheel. It observes real dirty state and
+page/item selection, binds mutations to an exact snapshot, and durably prevents
+same-ID and new-ID replay. After the R0 failure, its mutation entrypoints are
+disabled before native imports. Its portable tests demonstrate these guards only.

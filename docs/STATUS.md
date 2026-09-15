@@ -5,7 +5,7 @@ Updated: 2026-09-15. Shared baseline: 2026-09-14.1.
 | Area | State | Evidence |
 | --- | --- | --- |
 | Approved architecture | READY | User approved implementation after the Chembridge design review. |
-| Native feasibility | PARTIAL / FAILED LIFECYCLE GATE | Python trigger and readback observed. A guarded cross-engine standalone-document destruction test crashed Mnova with c0000409. Native mutation dispatch is disabled; save/reopen/export not accepted. See [native investigation](NATIVE_API.md) and [bounded receipt](../acceptance/native_20260915.json). |
+| Native feasibility | R0 FAILED / R1 NOT RUN | New session-lifecycle harness and exact-snapshot preflight ran; Mnova crashed before sentinel ownership was established. No dirty edit or target close ran. Acceptance mutations and production dispatch are disabled. See [R0 result](SESSION_LIFECYCLE_R0.md). The earlier [standalone failure](../acceptance/native_20260915.json) is separate evidence. |
 | Core and output contracts | PORTABLE CHECKS PASS | Six typed MCP tool surfaces, input staging/artifact integrity and durable jobs. Native operations remain gated, so the planned interface is not complete. |
 | Public repository | CREATED | Independent public repository created; implementation is a development preview. |
 | Cloud environment | READY / PORTABLE SCOPE | Original access restored; exact e861d52 core checkout passed actual container setup, maintenance and portable checks. See [cloud evidence](CLOUD_SETUP.md); native/model/host delivery remain separate. |
@@ -16,8 +16,17 @@ Work order: native bootstrap and owned-document feasibility, core/contracts, 1D 
 
 ## Current next step
 
-Investigate a supported document-lifecycle route that avoids the failing cross-engine handle destruction. First obtain a concrete ownership/release explanation from current vendor documentation or a separately authorised vendor support exchange; do not repeat the known crash. Preserve the original experiment and event evidence privately. Once a safe route exists, rerun the owned/unsaved-session gate before enabling any native write or attempting save/reopen/export acceptance.
+Resolve the session-creation execution-context and ownership contract before another native mutation. The new failure interval includes creation, its returned UUID read and the first post-create snapshot; the exact faulting instruction is unknown. The [R0 decision record](SESSION_LIFECYCLE_R0.md) defines narrower checkpoints and preserves the no-replay boundary. No target close or R2 save/reopen experiment is justified by the current evidence.
 
 No general installer, hosted relay, real host-model test or end-user release is claimed. This checkpoint provides portable infrastructure, a bounded current-device installation and explicit native-failure evidence.
 
-The [next technical route](NEXT_TECHNICAL_ROUTE.md) proposes a pure-Python session-owned lifetime experiment after genuine dirty-sentinel and close-semantics preconditions. It is a plan only. The current turn stops before that native implementation.
+The user approved R0/R1 implementation. Its acceptance harness is implemented, but the first mutation failed at R0. The [next technical route](NEXT_TECHNICAL_ROUTE.md) now records this checkpoint; it does not claim a repaired native lifecycle.
+
+## Portable verification for this checkpoint
+
+Local Windows checks passed: Ruff lint/format (19 files), **171 tests and 42
+subtests passed**, with one symlink-privilege skip. The new acceptance-harness
+guard tests account for 116 passing cases. Six contract schemas (19,898 UTF-8
+bytes) and actual MCP stdio structured/text parity and error branches passed.
+These checks cover the disabled harness and portable core; they do not make the
+failed native experiment pass. No runtime wheel source changed in this phase.

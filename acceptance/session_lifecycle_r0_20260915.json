@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "evidence_date": "2026-09-15",
+  "scope": "bounded_local_session_document_r0",
+  "native_build": "17.0.1-41952",
+  "embedded_python": "3.11.15",
+  "platform": "Windows",
+  "overall_state": "R0_FAILED_R1_NOT_RUN",
+  "production_native_mutations_enabled": false,
+  "acceptance_native_mutations_enabled": false,
+  "gates": {
+    "fresh_session_read_only_snapshot": "PASSED_BOUNDED",
+    "exact_snapshot_precondition": "PASSED_BOUNDED",
+    "durable_creation_intent": "PASSED",
+    "new_session_document_ownership": "NOT_ESTABLISHED",
+    "genuinely_dirty_sentinel": "NOT_RUN",
+    "target_creation": "NOT_RUN",
+    "target_close": "NOT_RUN",
+    "independent_post_close_readback": "NOT_RUN",
+    "native_save_reopen_export": "NOT_RUN"
+  },
+  "preflight": {
+    "document_count": 1,
+    "page_count": 1,
+    "page_item_count": 0,
+    "document_modified": false,
+    "undo_enabled": true,
+    "active_document_observers_agree": true,
+    "input_scope": "fresh_task_launched_blank_session"
+  },
+  "failure": {
+    "last_checkpoint_time_utc": "2026-09-15T19:31:49Z",
+    "last_persisted_stage": "create_sentinel_intent",
+    "first_missing_stage": "sentinel_created",
+    "native_error_title": "Oops!",
+    "native_error_text": "Our apologies, MestReNova has crashed",
+    "failure_interval": ["newDocument", "returned_uuid_read", "first_post_creation_snapshot"],
+    "precise_faulting_instruction": "UNDETERMINED",
+    "windows_exception_code": null,
+    "ownership_record_present": false,
+    "final_receipt_present": false,
+    "process_present_with_crash_dialog": true,
+    "request_replayed": false,
+    "force_close_or_restart_after_failure": false,
+    "crash_dump_generated_or_uploaded_by_agent": false,
+    "executed_harness_sha256": "daf98cf683b0dbe2ebdbfe1dd7dc9692e593887152d89810341bfcbb88776d46"
+  },
+  "limitations": [
+    "The native mutation outcome is unresolved; no owned document identity was established.",
+    "The earlier retained-JS-wrapper cleanup was not repeated and no target close was attempted.",
+    "This result does not establish the earlier crash root cause or reuse its exception code.",
+    "No user scientific files, licence contents, credentials or machine identifiers are published.",
+    "Portable tests, installed-host protocol, cloud execution and native acceptance remain separate."
+  ]
+}
