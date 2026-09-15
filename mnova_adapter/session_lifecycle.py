@@ -114,7 +114,13 @@ def snapshot() -> dict:
     dirty = {row["uuid"]: row["is_modified"] for row in observer["rows"]}
     record_path = MAILBOX / "ownership.json"
     record = json.loads(record_path.read_text(encoding="utf-8")) if record_path.exists() else {}
-    owned = {record.get("sentinel_uuid"), record.get("target_uuid")}
+    # A reopened document may retain its UUID in a different process. Historical
+    # ownership must not authorize scientific-content reads in that new session.
+    owned = (
+        {record.get("sentinel_uuid"), record.get("target_uuid")}
+        if record.get("pid") == os.getpid()
+        else set()
+    )
     rows = []
     for doc in DocumentPlugin.instance.documents():
         page = doc.currentPage

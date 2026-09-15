@@ -17,7 +17,10 @@ never intentionally retains a JS document wrapper between calls.
 - Private session/process and full snapshot binding before mutation.
 - Current page, active item and selected page/item identities are observed along
   with inventory and the actual document dirty flag. Only owned fixtures permit
-  scientific-content hashing.
+  scientific-content hashing. Ownership from a different process does not permit
+  content reads even if a reopened document retains its UUID; unregistered
+  documents remain metadata-only. This bounded process-ID fence is not a full
+  production session identity and does not solve process-ID reuse.
 - Exclusive, flushed request claims and per-operation intent files prevent
   replay under both the same and a different request ID.
 - Ownership requires a newly returned UUID and exactly one inventory addition;

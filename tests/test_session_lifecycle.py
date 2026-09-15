@@ -12,6 +12,72 @@ from unittest.mock import Mock
 import pytest
 
 
+@pytest.mark.parametrize("ownership_state", ["current", "previous", "absent"])
+def test_snapshot_does_not_read_scientific_content_under_old_session_ownership(
+    harness, monkeypatch, ownership_state
+):
+    module, mailbox = harness
+    document = SimpleNamespace(
+        uuid="reopened-document-with-persisted-uuid",
+        currentPage=None,
+        pageCount=1,
+        pageItems=lambda: [],
+        currentPageIndex=0,
+        activeItem=None,
+        getSelectedPages=lambda: [],
+        getSelectedPageItems=lambda: [],
+    )
+    other = SimpleNamespace(**(vars(document) | {"uuid": "unrelated-document"}))
+    plugin = SimpleNamespace(documents=lambda: [document, other])
+    framework = SimpleNamespace(activeDocument=document)
+    monkeypatch.setitem(
+        sys.modules,
+        "MnovaDocument",
+        SimpleNamespace(DocumentPlugin=SimpleNamespace(instance=plugin)),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "MnovaFramework",
+        SimpleNamespace(Framework=SimpleNamespace(instance=framework)),
+    )
+    observer = {
+        "rows": [{"uuid": doc.uuid, "is_modified": False} for doc in (document, other)],
+        "active_uuid": document.uuid,
+        "enable_undo": True,
+    }
+    monkeypatch.setitem(
+        sys.modules,
+        "MnovaJS",
+        SimpleNamespace(
+            JSPlugin=SimpleNamespace(
+                instance=SimpleNamespace(evaluate=Mock(return_value=json.dumps(observer)))
+            )
+        ),
+    )
+    if ownership_state != "absent":
+        (mailbox / "ownership.json").write_text(
+            json.dumps(
+                {
+                    "pid": module.os.getpid()
+                    if ownership_state == "current"
+                    else module.os.getpid() + 1,
+                    "sentinel_uuid": document.uuid,
+                }
+            ),
+            encoding="utf-8",
+        )
+    content_reader = Mock(return_value={"spectra": []})
+    monkeypatch.setattr(module, "owned_content", content_reader)
+    result = module.snapshot()
+    assert "owned_content" not in result["documents"][1]
+    if ownership_state == "current":
+        content_reader.assert_called_once_with(document)
+        assert result["documents"][0]["owned_content"] == {"spectra": []}
+    else:
+        content_reader.assert_not_called()
+        assert "owned_content" not in result["documents"][0]
+
+
 @pytest.fixture
 def harness(tmp_path, monkeypatch):
     path = Path(__file__).resolve().parents[1] / "mnova_adapter" / "session_lifecycle.py"

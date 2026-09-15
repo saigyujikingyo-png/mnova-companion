@@ -24,9 +24,9 @@ The user approved R0/R1 implementation. Its acceptance harness is implemented, b
 
 ## Portable verification for this checkpoint
 
-Local Windows checks passed: Ruff lint/format (19 files), **171 tests and 42
+Local Windows checks passed: Ruff lint/format (19 files), **174 tests and 42
 subtests passed**, with one symlink-privilege skip. The new acceptance-harness
-guard tests account for 116 passing cases. Six contract schemas (19,898 UTF-8
+guard tests account for 119 passing cases. Six contract schemas (19,898 UTF-8
 bytes) and actual MCP stdio structured/text parity and error branches passed.
 These checks cover the disabled harness and portable core; they do not make the
 failed native experiment pass. No runtime wheel source changed in this phase.
