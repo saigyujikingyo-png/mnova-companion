@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ctypes
 import hashlib
 import json
 import os
@@ -50,7 +51,7 @@ class ArtifactStoreTests(unittest.TestCase):
             ],
         )
         staged = self.store.resolve(result["source_id"], "sample α.mnova")
-        self.assertTrue(staged.is_relative_to(self.root))
+        self.assertTrue(staged.is_relative_to(self.root.resolve()))
         self.assertNotEqual(staged, source)
         self.assertEqual(staged.read_bytes(), b"abc")
         self.assertEqual(source.read_bytes(), b"abc")
@@ -313,6 +314,67 @@ class ArtifactStoreTests(unittest.TestCase):
 
         with mock.patch.object(Path, "lstat", reparse_lstat), self.assertRaises(ArtifactStoreError):
             self.store.stage(source)
+
+
+@unittest.skipUnless(os.name == "nt", "Windows short-path aliases")
+class WindowsShortPathTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory(prefix="mnova alias regression ")
+        self.addCleanup(self.temporary.cleanup)
+        self.base = Path(self.temporary.name).resolve()
+        self.directory = self.base / "Store With Spaces"
+        self.directory.mkdir()
+
+    def short_path(self, path: Path) -> Path:
+        function = ctypes.WinDLL("kernel32", use_last_error=True).GetShortPathNameW
+        function.argtypes = [ctypes.c_wchar_p, ctypes.c_wchar_p, ctypes.c_uint32]
+        function.restype = ctypes.c_uint32
+        capacity = function(str(path), None, 0)
+        if not capacity:
+            self.skipTest("The filesystem does not expose Windows short-path aliases")
+        buffer = ctypes.create_unicode_buffer(capacity)
+        written = function(str(path), buffer, capacity)
+        self.assertGreater(written, 0)
+        self.assertLess(written, capacity)
+        short = Path(buffer.value)
+        if short == path:
+            self.skipTest("The filesystem did not create a distinct short-path alias")
+        self.assertTrue(path.samefile(short))
+        return short
+
+    def test_short_parent_creates_store_and_preserves_stage_and_restart(self) -> None:
+        short_parent = self.short_path(self.directory)
+        long_root = self.directory / "new store"
+        store = ArtifactStore(short_parent / "new store")
+        self.assertEqual(store.root, long_root.resolve())
+        source = self.base / "Input With Spaces.mnova"
+        source.write_bytes(b"raw-source")
+        staged = store.stage(self.short_path(source))
+        self.assertEqual(staged["files"][0]["path"], source.name)
+        self.assertEqual(
+            store.resolve(staged["source_id"], source.name).read_bytes(), b"raw-source"
+        )
+        output = long_root / "Output With Spaces.mnova"
+        output.write_bytes(b"native-output")
+        artifact = store.register(self.short_path(output), "job-1", "native_document")
+        reopened = ArtifactStore(long_root)
+        self.assertEqual(reopened.read(artifact["artifact_id"]), b"native-output")
+        self.assertEqual(reopened.metadata(artifact["artifact_id"])["file_name"], output.name)
+
+    def test_short_output_alias_belongs_to_existing_long_path_store(self) -> None:
+        store = ArtifactStore(self.directory)
+        output = self.directory / "Output With Spaces.mnova"
+        output.write_bytes(b"native-output")
+        artifact = store.register(self.short_path(output), "job-1", "native_document")
+        self.assertEqual(store.read(artifact["artifact_id"]), b"native-output")
+
+    def test_short_source_alias_cannot_contain_store(self) -> None:
+        store = ArtifactStore(self.directory)
+        (self.directory / "sample.mnova").write_bytes(b"raw-source")
+        with self.assertRaises(ArtifactStoreError) as raised:
+            store.stage(self.short_path(self.directory))
+        self.assertEqual(raised.exception.code, "INVALID_PATH")
+        self.assertEqual(list((self.directory / "sources").iterdir()), [])
 
 
 if __name__ == "__main__":

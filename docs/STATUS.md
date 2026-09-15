@@ -5,7 +5,7 @@ Updated: 2026-09-15. Shared baseline: 2026-09-14.1.
 | Area | State | Evidence |
 | --- | --- | --- |
 | Approved architecture | READY | User approved implementation after the Chembridge design review. |
-| Native feasibility | PARTIAL / FAILED LIFECYCLE GATE | Python trigger and readback observed. A guarded cross-engine standalone-document destruction test crashed Mnova with c0000409. Native mutation dispatch is disabled; save/reopen/export not accepted. |
+| Native feasibility | PARTIAL / FAILED LIFECYCLE GATE | Python trigger and readback observed. A guarded cross-engine standalone-document destruction test crashed Mnova with c0000409. Native mutation dispatch is disabled; save/reopen/export not accepted. See [native investigation](NATIVE_API.md) and [bounded receipt](../acceptance/native_20260915.json). |
 | Core and output contracts | PORTABLE CHECKS PASS | Six typed MCP tool surfaces, input staging/artifact integrity and durable jobs. Native operations remain gated, so the planned interface is not complete. |
 | Public repository | CREATED | Independent public repository created; implementation is a development preview. |
 | Cloud environment | CREATED; CHECKS SEPARATE | Saved and selector-verified; see CLOUD_SETUP.md for actual checked revision and results. |

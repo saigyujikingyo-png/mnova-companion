@@ -163,6 +163,10 @@ class ArtifactStore:
             _no_links(self.root, missing_ok=True)
             self.root.mkdir(parents=True, exist_ok=True)
             self._check_root()
+            # Resolve a validated path so Windows 8.3 aliases use the same
+            # representation as resolved child paths. Never resolve before the
+            # link/reparse checks, which would hide a forbidden indirection.
+            self.root = self.root.resolve(strict=True)
             self._directory(self.root / "sources")
             self._directory(self.root / "artifact_metadata")
 
@@ -174,13 +178,12 @@ class ArtifactStore:
     def _inside(self, path: Path, *, missing_ok: bool = False) -> Path:
         self._check_root()
         path = _absolute(path)
+        _no_links(path, missing_ok=missing_ok)
+        path = path.resolve(strict=not missing_ok)
         if not path.is_relative_to(self.root):
             _fail("INVALID_PATH", "The artifact must be inside the store root.")
         if path != self.root:
             _relative(path.relative_to(self.root).as_posix())
-        _no_links(path, missing_ok=missing_ok)
-        if not path.resolve(strict=not missing_ok).is_relative_to(self.root):
-            _fail("INVALID_PATH", "The artifact escaped the store root.")
         return path
 
     def _directory(self, path: Path) -> None:
@@ -327,6 +330,7 @@ class ArtifactStore:
             self._check_root()
             source = _absolute(source)
             _no_links(source)
+            source = source.resolve(strict=True)
             if self.root.is_relative_to(source):
                 _fail("INVALID_PATH", "The input directory cannot contain the store itself.")
             inventory = self._inventory(source)

@@ -6,7 +6,7 @@ Independent open-source agent workflows for licensed MestReNova. This is a devel
 
 See [status and acceptance](docs/STATUS.md). The first target is a protected native 1D NMR workflow on Windows, with explicit structured tool outputs and editable native artifacts. Native, portable, host and delivery checks are separate.
 
-Read [shared development principles](DEVELOPMENT_PRINCIPLES.md) and [contributor instructions](AGENTS.md). Setup and executable checks will be listed here as they are implemented.
+Read [shared development principles](DEVELOPMENT_PRINCIPLES.md) and [contributor instructions](AGENTS.md). The [native investigation](docs/NATIVE_API.md) records the supported metadata route and failed lifecycle gate.
 
 ## Developer setup
 
@@ -17,8 +17,8 @@ Run the development MCP server with `uv run python -m mnova_companion`. It expos
 ## Verification
 
 ```text
-uv run ruff check src tests scripts
-uv run ruff format --check src tests scripts
+uv run ruff check src tests scripts mnova_adapter
+uv run ruff format --check src tests scripts mnova_adapter
 uv run pytest -q
 uv run python scripts/check_contracts.py
 uv run python scripts/smoke_mcp.py

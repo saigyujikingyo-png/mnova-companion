@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "evidence_date": "2026-09-15",
+  "scope": "bounded_local_synthetic_native_feasibility",
+  "native_build": "17.0.1-41952",
+  "embedded_python": "3.11.15",
+  "platform": "Windows",
+  "overall_state": "FAILED",
+  "production_native_mutations_enabled": false,
+  "gates": {
+    "python_file_trigger": "PASSED",
+    "repeat_trigger_existing_process": "PASSED",
+    "metadata_probe_inventory_preserved": "PASSED",
+    "synthetic_native_creation_and_readback": "PASSED_BOUNDED",
+    "nonempty_sentinel_preserved_through_python_reference_release": "PASSED_BOUNDED",
+    "genuinely_dirty_sentinel": "UNVERIFIED",
+    "exact_native_release": "FAILED",
+    "processing_and_integrals": "NOT_RUN",
+    "native_save": "NOT_RUN",
+    "fresh_disk_reopen": "NOT_RUN",
+    "pdf_png_csv_export": "NOT_RUN",
+    "licence_and_modules": "UNVERIFIED",
+    "visual_acceptance": "NOT_RUN",
+    "host_delivery": "NOT_RUN"
+  },
+  "synthetic_observations": {
+    "input": "original_two_analytic_singlets_xml",
+    "dimensions": 1,
+    "points": 16384,
+    "nucleus": "1H",
+    "frequency_mhz": 400.0,
+    "expected_peak_centers_ppm": [2.0, 5.0],
+    "actual_peak_centers_ppm": [1.9999999999999993, 5.000000000000001],
+    "expected_peak_intensities": [1.0, 2.0],
+    "actual_peak_intensities": [1.0, 2.0]
+  },
+  "lifecycle_failure": {
+    "event_time_utc": "2026-09-15T16:48:29.7979809Z",
+    "event_provider": "Application Error",
+    "event_id": 1000,
+    "application": "MestReNova.exe",
+    "application_version": "17.0.1.41952",
+    "fault_module": "ucrtbase.dll",
+    "exception_code": "c0000409",
+    "last_persisted_stage": "python_wrappers_released",
+    "sentinel_equal_at_last_stage": true,
+    "sentinel_modified_flag": false,
+    "existing_session_documents_at_start": "one_task_owned_synthetic_sentinel",
+    "final_native_receipt_present": false,
+    "process_absent_afterward": true,
+    "restarted_after_failure": false,
+    "experimental_source_sha256": "07e528193289dcfb73a555df540b2cc7ec831a05adbd87f57e971fbf1f0bbfa8",
+    "attribution": "Cross-language standalone lifecycle failed; precise failure inside retained-handle validation or destruction is undetermined."
+  },
+  "limitations": [
+    "This record contains no user scientific data, machine paths, process IDs or native document identifiers.",
+    "Documented methods and synthetic construction are not accepted production workflows.",
+    "Python reference release alone does not prove native document destruction.",
+    "No native save, fresh disk reopen or export was reached.",
+    "No licence secrets were read and no entitlement inference was made."
+  ]
+}
