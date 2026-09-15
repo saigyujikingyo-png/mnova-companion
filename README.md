@@ -6,6 +6,8 @@ Independent open-source agent workflows for licensed MestReNova. This is a devel
 
 See [status and acceptance](docs/STATUS.md). The first target is a protected native 1D NMR workflow on Windows, with explicit structured tool outputs and editable native artifacts. Native, portable, host and delivery checks are separate.
 
+The [current-device Codex installation](docs/INSTALLATION.md) includes the new [icon](assets/DESIGN.md) and an independently installed runtime. The [assessment and next technical route](docs/NEXT_TECHNICAL_ROUTE.md) stops before the next native coding phase; the lifecycle failure is unresolved.
+
 Read [shared development principles](DEVELOPMENT_PRINCIPLES.md) and [contributor instructions](AGENTS.md). The [native investigation](docs/NATIVE_API.md) records the supported metadata route and failed lifecycle gate.
 
 ## Developer setup

@@ -13,6 +13,10 @@
     "longDescription": "Portable source checkpoint with native writes disabled after a lifecycle failure. No end-user installer, host integration or scientific workflow is accepted yet.",
     "developerName": "Mnova Companion contributors",
     "category": "Productivity",
+    "brandColor": "#07394C",
+    "composerIcon": "./assets/mnova-companion.png",
+    "logo": "./assets/mnova-companion.png",
+    "logoDark": "./assets/mnova-companion.png",
     "capabilities": [],
     "defaultPrompt": "Help me use Mnova Companion."
   }

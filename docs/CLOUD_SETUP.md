@@ -31,8 +31,8 @@ installed or copied into the container.
 | Gate | State | Evidence |
 | --- | --- | --- |
 | Environment creation and saved setting readback | READY | Saved environment detail and edit pages show the matching repository and configuration. |
-| Interactive container setup and maintenance | READY | On commit `e03deb0eabf45a4a9b057403d232037193848e93`, Python 3.12.13 created the virtual environment, setup installed 35 packages, maintenance audited the same 35 packages, and the UI reported `Test complete`. |
-| Portable tests on the implementation commit | BLOCKED / NOT RUN IN CLOUD | Remote branch readback confirmed `e58824942c2fae86bd0f29b6fdb49f58f657e0dc`. The original browser session was no longer available when resuming; the remaining browser used a different signed-in account and could not load the saved environment. The initial setup pass is not a pass for this implementation revision. |
+| Interactive container setup and maintenance | READY | On `e861d5297e8d9c1c17284998c25bb8ae363cacde`, Python 3.12.13 installed 35 locked packages; the subsequent maintenance script audited the same 35 packages. The UI reported `Test complete`. |
+| Portable tests on the implementation commit | READY | The actual cloud checkout was `e861d5297e8d9c1c17284998c25bb8ae363cacde` and clean before and after checks. Ruff, formatting, 52 tests plus 42 subtests, contracts, MCP stdio smoke and source release preflight passed; four Windows-only tests were skipped on Linux. |
 | Environment selector readback | READY | The Codex Cloud composer listed `Chembridge / Mnova Companion`; selecting it exposed `codex/initial-preview` as the selected branch. No task was submitted. |
 | Actual model-based cloud task | UNVERIFIED | No task was created for this setup check. |
 | Desktop dispatch to the environment | UNVERIFIED | Not exercised by environment creation. |
@@ -46,13 +46,33 @@ or host delivery acceptance. Other Chembridge environment results are not reused
 Account identifiers, environment identifiers and private UI/session records are
 excluded from this public receipt.
 
-## Implementation-revision checks still required
+## Access recovery and implementation-revision checks
 
-Restore access to the existing environment through its owning account. Do not
-create a duplicate environment in another account merely to avoid the access
-boundary. Inspect the cloud checkout for user changes before updating it; retain
-any unrelated work and do not reset it. Then verify the actual checked-out commit
-and run the following commands in that cloud checkout:
+### Resolved browser access issue
+
+At 18:56 UTC the available Edge session returned no matching Mnova environment
+and the saved URL reported an error loading the environment. That observation
+did not establish a service failure or require creating another environment.
+
+Following renewed user authorization, the browser inventory was rediscovered.
+A connected Chrome session was now available. The account submenu in the
+ChatGPT home page exposed two existing signed-in accounts. Selecting the account
+corresponding to the original environment creator restored access to the same
+saved **Chembridge / Mnova Companion** environment at 19:07 UTC. The repository,
+setup and maintenance scripts, cache and network settings were read back on its
+edit page, and its interactive terminal was started.
+
+No password, MFA code, cookie or token was read or entered. No account security
+settings were changed and no duplicate environment was created. If this happens
+again, check the existing account submenu before concluding that the original
+environment needs to be recreated.
+
+### Actual cloud verification
+
+The newly provisioned cloud checkout already contained the requested commit, so
+no reset, checkout overwrite or pull was needed. A bounded script first printed
+and asserted its exact SHA and clean status, then executed the following existing
+checks with shell `time` measurements and failure-on-error enabled:
 
 ```bash
 bash scripts/setup_codex_cloud.sh
@@ -64,6 +84,46 @@ bash scripts/setup_codex_cloud.sh
 .venv/bin/python scripts/check_release.py
 ```
 
-These commands were not executed in the cloud for the implementation revision
-at this checkpoint. Local or CI results, if separately recorded, must not be
-described as results from this interactive Codex cloud container.
+| Check | Observed result | Shell real time |
+| --- | --- | --- |
+| Locked setup | 38 packages resolved; 35 packages installed | 3.524 s |
+| Ruff lint | All checks passed | 0.044 s |
+| Ruff formatting | 17 files already formatted | 0.045 s |
+| Pytest | 52 passed, 4 skipped, 42 subtests passed; pytest reported 1.99 s | 3.537 s |
+| Contract catalog | 6 tool contracts; 19,898 UTF-8 schema bytes | 0.626 s |
+| MCP smoke | Actual stdio subprocess; 6 tools, structured/text parity and error branches passed | 4.488 s |
+| Release source preflight | Tracked development manifest/privacy checks passed | 0.116 s |
+
+The four skipped tests cover one Windows junction case and three Windows
+short-path alias cases. They were not executed or accepted on this Linux cloud
+container. Schema bytes are not billing tokens; the MCP smoke check is protocol
+evidence, not a host-model or native acceptance test.
+
+The script's observed UTC timestamps were **2026-09-15 19:12:05** and
+**19:12:18**, an approximately 13-second interval with one-second timestamp
+precision. This interval covers the commands and their setup, not browser access
+recovery or cloud-container provisioning. After the checks, `git status --short`
+remained empty. The environment then ran its normal maintenance command,
+resolving 38 packages in 8 ms and auditing 35 packages in 0.78 ms, followed by
+`Test complete`.
+
+The interactive input box initially counted read-only commands without reliably
+displaying their execution output. Therefore, the complete check script was run
+through the environment's supported **rerun setup script** control. UI command
+counts are not used as pass evidence. The temporary setup text was restored to
+`bash scripts/setup_codex_cloud.sh` after the run. Returning to the saved detail
+page confirmed that both persisted setup and maintenance commands still had
+that original value, with the matching repository and zero model tasks. The
+temporary check harness was not saved as environment configuration.
+
+### Earlier setup evidence
+
+The initial environment creation separately passed setup and maintenance on
+`e03deb0eabf45a4a9b057403d232037193848e93`. That earlier result is retained as
+historical setup evidence; the implementation-revision results above come from
+the actual later cloud run and do not reuse local or CI results.
+
+For future checks, inspect the cloud checkout for user changes before updating
+it, preserve unrelated work, and record the actual checked-out commit. Cloud
+verification of later revisions requires a corresponding run; this receipt
+does not automatically cover commits made after the recorded SHA.

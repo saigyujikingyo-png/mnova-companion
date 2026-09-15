@@ -113,3 +113,8 @@ preservation, processing and integration, native save, complete release, fresh
 disk reopen with semantic/data equality, PDF/PNG/CSV exports, visual inspection,
 and licence/module-specific behavior. Host transport, model behavior, artifact
 delivery, scientific holdouts and release acceptance remain separate.
+
+The subsequent [technical route review](NEXT_TECHNICAL_ROUTE.md) identifies a
+possible stale cross-language wrapper and proposes a session-owned, Python-only
+experiment. That review used documents and prior evidence only; no new native
+execution or repair acceptance supersedes the failure recorded here.
