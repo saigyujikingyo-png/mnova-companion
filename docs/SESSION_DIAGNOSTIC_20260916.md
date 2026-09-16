@@ -4,8 +4,9 @@ Date: 2026-09-16. Native build: **17.0.1-41952**, embedded Python **3.11.15**.
 Current scope: developer acceptance only. Public native writes remain disabled.
 
 Historical diagnostic checkpoint: the distinct [main-window R0 follow-up](SESSION_LIFECYCLE_R1.md)
-subsequently established a visible owned document and genuine dirty state. The
-session-only activation no-op and its preserved receipt below remain valid.
+subsequently established a visible owned document and genuine dirty state, then
+failed R1 target close. The session-only activation no-op and its preserved
+receipt below remain valid.
 
 This checkpoint follows the [original R0 failure](SESSION_LIFECYCLE_R0.md).
 Its historical receipt and uncertain intent remain unchanged. The earlier

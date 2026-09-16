@@ -8,7 +8,7 @@ Updated: 2026-09-16. Shared baseline: 2026-09-14.1.
 | Native feasibility | R0 PASSED BOUNDED / R1 FAILED | Main-window ownership and genuine dirty state passed separate readback. The target-close sequence then removed the protected synthetic sentinel while retaining its target. Independent reconciliation confirmed the failure and preserved original document state. All writes stopped; a separate close gate is disabled. See [current lifecycle record](SESSION_LIFECYCLE_R1.md). |
 | Core and output contracts | PORTABLE CHECKS PASS | Six typed MCP tool surfaces, input staging/artifact integrity and durable jobs. Native operations remain gated, so the planned interface is not complete. |
 | Public repository | CREATED | Independent public repository created; implementation is a development preview. |
-| Cloud environment | READY / PORTABLE SCOPE | Exact a5f9cd5 code checkout passed actual container setup, 225 tests plus 42 subtests (four platform skips), all portable checks and maintenance. Saved commands restored and read back. See [cloud evidence](CLOUD_SETUP.md); native/model/host delivery remain separate. |
+| Cloud environment | READY / PORTABLE SCOPE | Exact 77f6dac code checkout passed actual container setup, 270 tests plus 42 subtests (four platform skips), all portable checks and maintenance. Saved commands restored and read back. See [cloud evidence](CLOUD_SETUP.md); native/model/host delivery remain separate. |
 | Current-device Codex installation | READY / BOUNDED | Icon, enabled personal plugin and non-editable private runtime verified; six installed MCP calls passed outside the checkout. See [installation](INSTALLATION.md). No host-model acceptance is inferred. |
 | General installer, other hosts and delivery | UNVERIFIED | Standalone packaging, new-device/update/removal and actual host attachments remain unverified. No acceptance inherited from another product. |
 
@@ -32,8 +32,7 @@ bytes) and actual MCP stdio structured/text parity and error branches passed.
 These checks cover the disabled harness and portable core; they do not pass the
 remaining native gates. No runtime wheel source changed in this phase.
 
-For the earlier code revision `a5f9cd5`, [GitHub CI](https://github.com/saigyujikingyo-png/mnova-companion/actions/runs/35080686690)
-passed on Windows (229 tests, 44 subtests) and Ubuntu (225 tests, four platform
-skips, 42 subtests). This is separate from the actual Codex cloud-environment run
-recorded in `CLOUD_SETUP.md`. The R1 containment revision requires its own CI and
-cloud checks before those results can be extended to it.
+For exact containment code revision `77f6dac`, [GitHub CI](https://github.com/saigyujikingyo-png/mnova-companion/actions/runs/35083634919)
+passed on Windows (274 tests, 44 subtests) and Ubuntu (270 tests, four platform
+skips, 42 subtests). This is separate from the actual Codex cloud-environment runs
+recorded in `CLOUD_SETUP.md`.

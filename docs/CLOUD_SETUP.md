@@ -203,3 +203,42 @@ subtests). These cloud and CI passes do not satisfy native document-view,
 dirty-state, R1, model or file-delivery gates; native results are recorded separately
 in [the lifecycle report](SESSION_LIFECYCLE_R1.md). Subsequent
 documentation-only evidence updates do not change the checked code.
+
+## R1 failure containment: 2026-09-16 cloud verification
+
+The same saved environment's official setup-test UI ran a fresh checkout of
+**`77f6dac132307067eff0d06739807f895bbe4614`**. The temporary unsaved script
+asserted the full commit and clean tree before checks, then a clean tree afterward.
+This revision contains target page initialization and the independent disabled
+close gate following native R1 failure. No model task or duplicate environment
+was created; licensed Mnova was not run in the cloud.
+
+| Check | Observed result | Shell real time |
+| --- | --- | --- |
+| Locked setup | Python 3.12.13; 38 packages resolved, 35 installed | 3.099 s |
+| Ruff lint | Passed | 0.055 s |
+| Ruff formatting | 21 files already formatted | 0.069 s |
+| Pytest | 270 passed, 4 Windows-only skips, 42 subtests; pytest 3.48 s | 5.194 s |
+| Contracts | 6 tools; 19,898 UTF-8 schema bytes | 0.709 s |
+| Actual MCP stdio | Structured/text parity and error branches passed | 4.803 s |
+| Source preflight | Tracked manifest/privacy checks passed | 0.117 s |
+
+Observed UTC timestamps were **2026-09-16 10:13:42 to 10:13:56**, approximately
+14 seconds excluding container provisioning and subsequent maintenance.
+Maintenance resolved 38 packages in 7 ms and audited 35 in 0.76 ms; the UI
+reported `Test complete`. Skips cover one Windows junction and three short-path
+cases.
+
+The temporary setup was restored and saved. Both the saved detail and a freshly
+reopened edit page confirmed setup and maintenance remained
+`bash scripts/setup_codex_cloud.sh`, with the original repository, universal
+image, cache, common-dependency networking, allowed HTTP methods and zero tasks.
+No extra domain, variable or secret was added. The private observed log is a
+reflowed accessibility transcript with explicit omissions, not a raw page export.
+
+Independent [CI for this exact code](https://github.com/saigyujikingyo-png/mnova-companion/actions/runs/35083634919)
+passed on Windows (274 tests/44 subtests) and Ubuntu (270 tests/four skips/42
+subtests). These checks validate the portable containment implementation;
+**native R1 remains FAILED**. Native science, host-model behavior, file delivery
+and release are not accepted by these results. Later documentation-only evidence
+updates do not change the checked implementation.

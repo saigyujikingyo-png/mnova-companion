@@ -82,6 +82,15 @@ power-loss durable. No automatic cleanup is authorized by a failed postcondition
 
 ## 4. Next technical gate
 
+Read-only inspection after R1 found no Python closing example or documented
+session-to-window mapping. The installed JS reference describes
+`Document.close()` as closing the document window; the vendor
+`dbImportFilesByLocation.qs` example obtains a main-window document before using
+that method. This is evidence for investigating the window relationship, not
+permission to substitute JS close for the failed session-target sequence.
+Cancellation, prompt handling and wrapper ownership remain unspecified. No
+documented extra Boolean argument or force-close option was found.
+
 1. Establish documented session/window ownership and close semantics for the
    installed binding, with enough evidence to select an exact-target mechanism.
    Static source/documentation inspection comes before another native experiment.
