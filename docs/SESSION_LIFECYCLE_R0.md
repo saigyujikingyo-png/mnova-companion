@@ -4,7 +4,8 @@ Date: 2026-09-15. State: **R0 FAILED; R1 NOT RUN**.
 
 Historical checkpoint. The [2026-09-16 diagnostic](SESSION_DIAGNOSTIC_20260916.md)
 subsequently narrowed the snapshot failure and passed creation/readback with a
-zero-page guard. Genuine dirty state and R1 remain unaccepted. The observations
+zero-page guard. The [main-window follow-up](SESSION_LIFECYCLE_R1.md) later passed
+bounded genuine dirty-state checks, then failed R1 target close. The observations
 and original failed receipt below are preserved as recorded.
 
 The user approved the next implementation phase after reviewing the technical

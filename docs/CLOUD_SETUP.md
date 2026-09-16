@@ -128,7 +128,7 @@ it, preserve unrelated work, and record the actual checked-out commit. Cloud
 verification of later revisions requires a corresponding run; this receipt
 does not automatically cover commits made after the recorded SHA.
 
-## R0 implementation checkpoint: latest cloud verification
+## R0 implementation checkpoint: 2026-09-15 cloud verification
 
 The existing recovered browser session accessed the same environment directly.
 No account exploration, new environment or model task was needed. Its official
@@ -164,3 +164,42 @@ passed on Windows (175 tests, 44 subtests) and Ubuntu (171 tests, four skips,
 executed licensed Mnova, accepted the native crash, invoked a host model or
 verified native artifact delivery. Later documentation-only receipt commits do
 not change the code covered by this recorded run.
+
+## Zero-page diagnostic: 2026-09-16 cloud verification
+
+The same saved environment's official setup-test route checked a fresh clean
+checkout of **`a5f9cd5c4f20b451bfc2243b9732d191b8de073e`**. The temporary unsaved
+script asserted the exact full SHA and clean tree before checks, then asserted
+the tree remained clean afterward. The existing signed-in browser session worked
+without an account change, new credentials, duplicate environment or model task.
+
+| Check | Observed result | Shell real time |
+| --- | --- | --- |
+| Locked setup | Python 3.12.13; 38 packages resolved, 35 installed | 3.467 s |
+| Ruff lint | Passed | 0.046 s |
+| Ruff formatting | 21 files already formatted | 0.047 s |
+| Pytest | 225 passed, 4 Windows-only skips, 42 subtests; pytest 3.01 s | 4.509 s |
+| Contracts | 6 tools; 19,898 UTF-8 schema bytes | 0.628 s |
+| Actual MCP stdio | Structured/text parity and error branches passed | 4.694 s |
+| Source preflight | Tracked manifest/privacy checks passed | 0.110 s |
+
+Observed UTC timestamps were **2026-09-16 09:41:50 to 09:42:04**, approximately
+14 seconds at one-second precision, excluding provisioning and subsequent
+maintenance. Maintenance resolved 38 packages in 9 ms and audited 35 in 1 ms;
+the UI reported `Test complete`. Skips cover one Windows junction and three
+Windows short-path cases. Native Mnova was not run in this Linux container.
+
+The temporary setup field was restored. Both edit fields and the persisted
+environment detail page were read back: setup and maintenance remained
+`bash scripts/setup_codex_cloud.sh`, with the original repository, universal
+image, cache, dependency networking and zero tasks. The temporary check script
+was not saved as environment configuration. Private evidence includes the actual
+accessibility output transcribed with line breaks; it is not an unprocessed page
+export, which was unavailable through the browser provider.
+
+Independent [CI for the same code](https://github.com/saigyujikingyo-png/mnova-companion/actions/runs/35080686690)
+passed on Windows (229 tests/44 subtests) and Ubuntu (225 tests/four skips/42
+subtests). These cloud and CI passes do not satisfy native document-view,
+dirty-state, R1, model or file-delivery gates; native results are recorded separately
+in [the lifecycle report](SESSION_LIFECYCLE_R1.md). Subsequent
+documentation-only evidence updates do not change the checked code.

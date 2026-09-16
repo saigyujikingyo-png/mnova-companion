@@ -6,9 +6,11 @@ environment. No packages were installed into the embedded interpreter.
 
 Follow-up: the [2026-09-16 session diagnostic](SESSION_DIAGNOSTIC_20260916.md)
 guards zero-page canvas observation and passed session creation plus independent
-synthetic readback. R0 remains partial because the owned document view and genuine
-dirty state are not established. The earlier experiments below remain historical
-evidence; the retained-JS cleanup route remains rejected.
+synthetic readback. The [main-window follow-up](SESSION_LIFECYCLE_R1.md) then passed
+bounded R0 ownership and genuine dirty-state checks. R1 failed: its target-close
+sequence removed the protected synthetic sentinel while retaining the target.
+All writes stopped and a separate close gate is disabled. The earlier experiments
+below remain historical evidence; the retained-JS cleanup route remains rejected.
 
 ## Result
 
@@ -120,14 +122,15 @@ disk reopen with semantic/data equality, PDF/PNG/CSV exports, visual inspection,
 and licence/module-specific behavior. Host transport, model behavior, artifact
 delivery, scientific holdouts and release acceptance remain separate.
 
-## Subsequent session-creation experiment
+## Historical session-creation experiment: 2026-09-15
 
 After the [technical route review](NEXT_TECHNICAL_ROUTE.md), the user approved
 R0/R1 development. The new [R0 harness and result](SESSION_LIFECYCLE_R0.md) recorded
 a successful fresh-session snapshot followed by a crash before session sentinel
 ownership was established. No target close was attempted. The failure interval
 contains Python creation, returned UUID access and the first fresh snapshot;
-precise attribution is unknown. The original retained-JS destruction route was
+precise attribution was unknown at that checkpoint; see the
+[2026-09-16 follow-up](SESSION_DIAGNOSTIC_20260916.md). The original retained-JS destruction route was
 not repeated. Both native failures remain unaccepted and independently recorded.
 
 The new harness is outside the installed wheel. It observes real dirty state and

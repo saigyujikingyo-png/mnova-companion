@@ -3,6 +3,10 @@
 Date: 2026-09-16. Native build: **17.0.1-41952**, embedded Python **3.11.15**.
 Current scope: developer acceptance only. Public native writes remain disabled.
 
+Historical diagnostic checkpoint: the distinct [main-window R0 follow-up](SESSION_LIFECYCLE_R1.md)
+subsequently established a visible owned document and genuine dirty state. The
+session-only activation no-op and its preserved receipt below remain valid.
+
 This checkpoint follows the [original R0 failure](SESSION_LIFECYCLE_R0.md).
 Its historical receipt and uncertain intent remain unchanged. The earlier
 standalone/retained-JavaScript cleanup failure is a separate rejected route.
@@ -50,7 +54,8 @@ supplied from the current desktop observation rather than discovered by the prob
 | Target close and separate post-close readback | Not run |
 | Save, fresh disk reopen, scientific processing and export | Not run |
 
-The original two-singlet synthetic fixture remains private. No user scientific
+Raw native diagnostic artifacts and receipts remain private; the original
+two-singlet XML generator is public source. No user scientific
 input, machine/process/document identifiers, proprietary images or licence data
 are included in public evidence. The accepted readback concerns native in-memory
 data, not a saved or delivered file.

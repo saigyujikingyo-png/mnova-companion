@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "evidence_date": "2026-09-16",
+  "scope": "bounded_owned_target_close_with_dirty_synthetic_sentinel",
+  "native_build": "17.0.1-41952",
+  "embedded_python": "3.11.15",
+  "platform": "Windows",
+  "overall_state": "R1_FAILED",
+  "production_native_mutations_enabled": false,
+  "shipped_acceptance_mutations_enabled": false,
+  "shipped_target_close_enabled": false,
+  "gates": {
+    "r0_main_window_dirty_sentinel": "PASSED_BOUNDED",
+    "clean_single_page_target_creation": "PASSED_BOUNDED",
+    "independent_target_readback": "PASSED_BOUNDED",
+    "exact_target_removal": "FAILED",
+    "dirty_sentinel_preservation": "FAILED",
+    "active_document_preservation": "FAILED",
+    "independent_failure_reconciliation": "COMPLETED",
+    "original_three_rows_and_old_synthetic_buffer_preserved": "PASSED_BOUNDED",
+    "r2_save_reopen_and_scientific_workflow": "NOT_RUN",
+    "host_model_and_file_delivery": "NOT_RUN"
+  },
+  "observations": {
+    "documents_before_close_sequence": 5,
+    "documents_after_close_sequence": 4,
+    "close_attempts": 1,
+    "target_before": {"page_count": 1, "item_count": 0, "is_modified": false},
+    "sentinel_before": {"page_count": 2, "item_count": 1, "is_modified": true},
+    "intended_target_present_after": true,
+    "protected_synthetic_sentinel_present_after": false,
+    "active_document_after": "original_startup_blank",
+    "failed_receipt_error": "Owned document missing or ambiguous",
+    "independent_after_snapshot_identical": true,
+    "old_scope_readback_preserved": true,
+    "old_synthetic_real_sha256": "98ce54e1b07421d18909223e7da8d0b07a201062e1c7d61207a3e2f14d251598",
+    "native_crash_observed": false,
+    "native_writes_after_failure": 0,
+    "automatic_cleanup_attempted": false,
+    "user_scientific_files_used": false
+  },
+  "executed_lifecycle_source_sha256": "9f6a1c89073507b2ca5cf999baab5488edcc82da14bd543f524091ea3d4ed34d",
+  "unisolated_failure_interval": [
+    "target resolution and wrapper enumeration or release",
+    "DocumentPlugin.closeDocument(target)",
+    "target wrapper reference release",
+    "first fresh native snapshot"
+  ],
+  "limitations": [
+    "The postcondition detected removal of the protected sentinel; it did not prevent that removal.",
+    "The evidence does not isolate the native cause or establish a general vendor defect.",
+    "The removed document was a task-created synthetic fixture, not an input user file.",
+    "The preserved original documents and responsive process do not satisfy R1.",
+    "Portable containment tests do not establish safe native closure.",
+    "No native retry, alternate cleanup or vendor support message followed the failure."
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "evidence_date": "2026-09-16",
+  "scope": "bounded_owned_gui_document_and_genuine_dirty_state",
+  "native_build": "17.0.1-41952",
+  "embedded_python": "3.11.15",
+  "platform": "Windows",
+  "overall_state": "R0_PASSED_BOUNDED",
+  "production_native_mutations_enabled": false,
+  "shipped_acceptance_mutations_enabled": false,
+  "creation_route": "Framework.getAction(action_File_New).trigger",
+  "gates": {
+    "process_instance_and_observed_window_thread": "PASSED_BOUNDED",
+    "single_new_window_action_and_scope_return": "PASSED_BOUNDED",
+    "independent_unique_identity_before_ownership": "PASSED_BOUNDED",
+    "active_observers_and_visible_document_view": "PASSED_BOUNDED",
+    "owned_synthetic_attachment_and_separate_readback": "PASSED_BOUNDED",
+    "genuine_dirty_edit_and_separate_readback": "PASSED_BOUNDED",
+    "old_document_rows_and_old_synthetic_buffer_preserved": "PASSED_BOUNDED",
+    "save_reopen_export_and_spectral_visual_acceptance": "NOT_RUN",
+    "host_model_and_file_delivery": "NOT_RUN"
+  },
+  "observations": {
+    "documents_before": 3,
+    "documents_after": 4,
+    "created_page_count": 1,
+    "created_item_count": 0,
+    "created_is_modified": false,
+    "ownership_claimed_after_independent_readback": true,
+    "synthetic_points": 16384,
+    "synthetic_nucleus": "1H",
+    "synthetic_frequency_mhz": 400.0,
+    "synthetic_real_sha256": "98ce54e1b07421d18909223e7da8d0b07a201062e1c7d61207a3e2f14d251598",
+    "modified_after_direct_attachment": false,
+    "dirty_action": "action_Edit_CreateNewPage",
+    "page_count_after_dirty_action": 2,
+    "is_modified_after_dirty_action": true,
+    "independent_dirty_readback_identical": true,
+    "undo_control_enabled_after_edit": true,
+    "old_ownership_scope_readback_preserved": true,
+    "native_crash_observed": false
+  },
+  "executed_source_sha256": {
+    "gui_creation": "122d6af739d525df2e7c939d46dc2cd1a68316d57d692159cff0ee572cd5f934",
+    "claim_and_attachment": "e8569ea7e93f0c80fb22f37cf73e22d78906812d0016ceb629f356dd827df95d",
+    "dirty_action_and_readback_harness": "31b930fd26c4031718f75b7b71144728999db564130f613e47f5346d2737bad7"
+  },
+  "limitations": [
+    "The private experiment runner is not a production transport or public native dispatcher.",
+    "This accepted main-window creation route is distinct from the no-op existing-document setter.",
+    "No existing document was re-registered through addDocument.",
+    "Document-view presence is not acceptance of the spectrum's rendered layout or scientific processing.",
+    "No licence entitlement, save/reopen, host delivery or general lifetime guarantee is inferred."
+  ]
+}

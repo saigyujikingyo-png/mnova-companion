@@ -17,9 +17,11 @@ from pathlib import Path
 
 MAILBOX = Path(__file__).resolve().parents[1] / ".local" / "native" / "session-r1"
 OPERATIONS = {"inspect", "create_sentinel", "dirty_action", "create_target", "close_target"}
-# R0 failed before ownership could be established. Re-enable only after a
-# separately reviewed diagnostic route; changing request IDs is not recovery.
+# Shipped native writes require separate acceptance; changing request IDs is not recovery.
 MUTATIONS_ENABLED = False
+# R1 close removed the protected sentinel while leaving the requested target present.
+# A private bootstrap enabling other writes must not implicitly authorize this route.
+TARGET_CLOSE_ENABLED = False
 
 
 def write_json(path: Path, value: dict) -> None:
@@ -222,13 +224,10 @@ def require_target_creation(record: dict) -> None:
         target = row_for(state, record["target_uuid"])
         if (
             type(target.get("page_count")) is not int
-            or target["page_count"] < 0
-            or type(target.get("is_modified")) is not bool
-            or (target["page_count"] == 0 and target.get("item_count", "missing") is not None)
-            or (
-                target["page_count"] > 0
-                and (type(target.get("item_count")) is not int or target["item_count"] < 0)
-            )
+            or target["page_count"] != 1
+            or type(target.get("item_count")) is not int
+            or target["item_count"] != 0
+            or target.get("is_modified") is not False
         ):
             raise ValueError("Target creator document observation is invalid")
     except (OSError, ValueError, TypeError, KeyError, RuntimeError) as exc:
@@ -269,7 +268,11 @@ def resolve(plugin, uuid: str):
 
 def perform(request: dict, mark) -> dict:
     if request["operation"] != "inspect" and not MUTATIONS_ENABLED:
-        raise RuntimeError("R0 session creation failed; native mutations remain disabled")
+        raise RuntimeError(
+            "Native lifecycle acceptance is incomplete; native mutations remain disabled"
+        )
+    if request["operation"] == "close_target" and not TARGET_CLOSE_ENABLED:
+        raise RuntimeError("R1 target close failed; native close remains disabled")
     from MnovaDocument import DocumentPlugin
     from MnovaFramework import Framework
 
@@ -352,9 +355,34 @@ def perform(request: dict, mark) -> dict:
                 mark("target_created", snapshot=created)
                 if not one_new_identity(before, created, created_uuid):
                     raise RuntimeError("Target creation changed existing inventory")
+                if any(row_for(created, row["uuid"]) != row for row in before["documents"]):
+                    raise RuntimeError("A pre-existing document state changed during creation")
+                target_created = row_for(created, created_uuid)
+                if (
+                    type(target_created.get("page_count")) is not int
+                    or target_created["page_count"] not in {0, 1}
+                    or target_created.get("is_modified") is not False
+                    or (
+                        target_created["page_count"] == 0
+                        and target_created.get("item_count", "missing") is not None
+                    )
+                    or (
+                        target_created["page_count"] == 1
+                        and (
+                            type(target_created.get("item_count")) is not int
+                            or target_created["item_count"] != 0
+                        )
+                    )
+                ):
+                    raise RuntimeError("Target creation did not observe a clean blank document")
                 record["target_uuid"] = created_uuid
                 record["target_creator_request"] = request["request_id"]
                 write_json(MAILBOX / "ownership.json", record)
+                if target_created["page_count"] == 0:
+                    # The existing durable operation intent covers this second write.
+                    mark("target_page_init_intent", target_uuid=created_uuid)
+                    page = parent.newPage()
+                    page = None  # Drop the child while its session parent remains live.
             elif operation == "close_target":
                 target_uuid = record["target_uuid"]
                 if target_uuid == sentinel_uuid:
@@ -363,7 +391,7 @@ def perform(request: dict, mark) -> dict:
                 if (
                     target_before["is_modified"] is not False
                     or type(target_before.get("page_count")) is not int
-                    or target_before["page_count"] <= 0
+                    or target_before["page_count"] != 1
                     or type(target_before.get("item_count")) is not int
                     or target_before["item_count"] != 0
                 ):
@@ -378,6 +406,18 @@ def perform(request: dict, mark) -> dict:
                 target = None
     after = snapshot()
     mark("after", snapshot=after, snapshot_sha256=digest(after))
+    if operation == "create_target":
+        if not one_new_identity(before, after, created_uuid):
+            raise RuntimeError("Target initialization changed the expected inventory")
+        target_after = row_for(after, created_uuid)
+        if (
+            type(target_after.get("page_count")) is not int
+            or target_after["page_count"] != 1
+            or type(target_after.get("item_count")) is not int
+            or target_after["item_count"] != 0
+            or target_after.get("is_modified") is not False
+        ):
+            raise RuntimeError("Target must be an observed clean blank single-page document")
     if operation == "dirty_action":
         sentinel_after = row_for(after, sentinel_uuid)
         if (
@@ -409,7 +449,11 @@ def main() -> None:
     request = json.loads((MAILBOX / "request.json").read_text(encoding="utf-8"))
     validate_request(request)
     if request["operation"] != "inspect" and not MUTATIONS_ENABLED:
-        raise RuntimeError("R0 session creation failed; native mutations remain disabled")
+        raise RuntimeError(
+            "Native lifecycle acceptance is incomplete; native mutations remain disabled"
+        )
+    if request["operation"] == "close_target" and not TARGET_CLOSE_ENABLED:
+        raise RuntimeError("R1 target close failed; native close remains disabled")
     name = request["request_id"]
     started = MAILBOX / (name + ".started.json")
     final = MAILBOX / (name + ".receipt.json")
