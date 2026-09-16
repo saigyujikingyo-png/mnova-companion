@@ -12,6 +12,68 @@ from unittest.mock import Mock
 import pytest
 
 
+@pytest.mark.parametrize("owned", [False, True])
+def test_pageless_document_never_enters_canvas_or_content_getters(harness, monkeypatch, owned):
+    module, mailbox = harness
+
+    class PagelessDocument:
+        uuid = "new-document-before-first-page"
+        pageCount = 0
+
+        def __getattr__(self, name):
+            pytest.fail(f"Unsafe canvas access for a pageless document: {name}")
+
+    document = PagelessDocument()
+    monkeypatch.setitem(
+        sys.modules,
+        "MnovaDocument",
+        SimpleNamespace(
+            DocumentPlugin=SimpleNamespace(instance=SimpleNamespace(documents=lambda: [document]))
+        ),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "MnovaFramework",
+        SimpleNamespace(
+            Framework=SimpleNamespace(instance=SimpleNamespace(activeDocument=document))
+        ),
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "MnovaJS",
+        SimpleNamespace(
+            JSPlugin=SimpleNamespace(
+                instance=SimpleNamespace(
+                    evaluate=lambda _: json.dumps(
+                        {
+                            "rows": [{"uuid": document.uuid, "is_modified": False}],
+                            "active_uuid": document.uuid,
+                            "enable_undo": True,
+                        }
+                    )
+                )
+            )
+        ),
+    )
+    if owned:
+        (mailbox / "ownership.json").write_text(
+            json.dumps(
+                {
+                    "pid": module.os.getpid(),
+                    "sentinel_uuid": document.uuid,
+                }
+            ),
+            encoding="utf-8",
+        )
+    content_reader = Mock(side_effect=AssertionError("No canvas exists"))
+    monkeypatch.setattr(module, "owned_content", content_reader)
+    row = module.snapshot()["documents"][0]
+    assert row["page_count"] == 0
+    assert row["item_count"] is None
+    assert row["page_observation"] == "not_run_no_pages"
+    content_reader.assert_not_called()
+
+
 @pytest.mark.parametrize("ownership_state", ["current", "previous", "absent"])
 def test_snapshot_does_not_read_scientific_content_under_old_session_ownership(
     harness, monkeypatch, ownership_state
@@ -568,3 +630,197 @@ def test_creation_must_prove_one_new_identity_before_claiming_ownership(
         assert not (mailbox / "ownership.json").exists()
     else:
         assert (mailbox / "ownership.json").read_bytes() == original_ownership
+
+
+def prepare_close(module, mailbox, state):
+    state["documents"][0]["is_modified"] = True
+    state["documents"].append(
+        {
+            "uuid": "target",
+            "is_modified": False,
+            "page_count": 1,
+            "item_count": 0,
+            "owned_content": {"spectra": []},
+        }
+    )
+    save_ownership(
+        module,
+        mailbox,
+        state,
+        target_uuid="target",
+        target_creator_request="target-creator",
+        sentinel_baseline=copy.deepcopy(state["documents"][0]),
+    )
+    receipt = {
+        "state": "completed",
+        "request": request_for("create_target", request_id="target-creator"),
+        "result": {"snapshot": copy.deepcopy(state)},
+    }
+    module.write_json(mailbox / "target-creator.receipt.json", receipt)
+    return receipt
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("item_count", None),
+        ("item_count", False),
+        ("item_count", 0.0),
+        ("item_count", "0"),
+        ("item_count", -1),
+        ("item_count", 1),
+        ("page_count", None),
+        ("page_count", False),
+        ("page_count", 1.0),
+        ("page_count", "1"),
+        ("page_count", -1),
+        ("page_count", 0),
+    ],
+)
+def test_close_rejects_unobserved_or_invalid_target_counts_before_resolve(
+    harness, native_boundary, field, value
+):
+    module, mailbox = harness
+    plugin, framework, state, _ = native_boundary
+    prepare_close(module, mailbox, state)
+    state["documents"][1][field] = value
+    with pytest.raises(RuntimeError, match="clean blank target"):
+        module.perform(request_for("close_target", expected_snapshot=module.digest(state)), Mock())
+    assert plugin.mock_calls == []
+    assert framework.mock_calls == []
+    assert not (mailbox / "close_target.intent.json").exists()
+
+
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "missing",
+        "invalid_json",
+        "not_object",
+        "running",
+        "failed",
+        "unknown",
+        "missing_request",
+        "wrong_operation",
+        "wrong_request_id",
+        "missing_result",
+        "missing_snapshot",
+        "wrong_session",
+        "missing_target",
+        "duplicate_target",
+        "malformed_documents",
+        "malformed_row",
+        "missing_creator_id",
+        "invalid_creator_id",
+    ],
+)
+def test_close_requires_completed_matching_target_creation_before_resolve(
+    harness, native_boundary, fault
+):
+    module, mailbox = harness
+    plugin, framework, state, _ = native_boundary
+    receipt = prepare_close(module, mailbox, state)
+    path = mailbox / "target-creator.receipt.json"
+    if fault == "missing":
+        path.unlink()
+    elif fault == "invalid_json":
+        path.write_text("{", encoding="utf-8")
+    elif fault == "not_object":
+        module.write_json(path, [])
+    elif fault in {"running", "failed", "unknown"}:
+        receipt["state"] = fault
+    elif fault == "missing_request":
+        receipt.pop("request")
+    elif fault == "wrong_operation":
+        receipt["request"]["operation"] = "inspect"
+    elif fault == "wrong_request_id":
+        receipt["request"]["request_id"] = "another-creator"
+    elif fault == "missing_result":
+        receipt.pop("result")
+    elif fault == "missing_snapshot":
+        receipt["result"].pop("snapshot")
+    elif fault == "wrong_session":
+        receipt["result"]["snapshot"]["pid"] += 1
+    elif fault == "missing_target":
+        receipt["result"]["snapshot"]["documents"].pop()
+    elif fault == "duplicate_target":
+        receipt["result"]["snapshot"]["documents"].append(state["documents"][1])
+    elif fault == "malformed_documents":
+        receipt["result"]["snapshot"]["documents"] = None
+    elif fault == "malformed_row":
+        receipt["result"]["snapshot"]["documents"] = [None]
+    elif fault in {"missing_creator_id", "invalid_creator_id"}:
+        record = read_json(mailbox / "ownership.json")
+        if fault == "missing_creator_id":
+            record.pop("target_creator_request")
+        else:
+            record["target_creator_request"] = "../target-creator"
+        module.write_json(mailbox / "ownership.json", record)
+    if fault not in {"missing", "invalid_json", "not_object"}:
+        module.write_json(path, receipt)
+    with pytest.raises(RuntimeError, match="Target creation evidence"):
+        module.perform(request_for("close_target", expected_snapshot=module.digest(state)), Mock())
+    assert plugin.mock_calls == []
+    assert framework.mock_calls == []
+    assert not (mailbox / "close_target.intent.json").exists()
+
+
+@pytest.mark.parametrize("operation", ["dirty_action", "create_target", "close_target"])
+def test_pageless_sentinel_explicitly_refuses_unobserved_content(
+    harness, native_boundary, operation
+):
+    module, mailbox = harness
+    plugin, framework, state, _ = native_boundary
+    state["documents"][0].update(page_count=0, item_count=None, owned_content=None)
+    if operation != "dirty_action":
+        state["documents"][0]["is_modified"] = True
+    save_ownership(module, mailbox, state)
+    with pytest.raises(RuntimeError, match="Sentinel content is unobserved"):
+        module.perform(request_for(operation, expected_snapshot=module.digest(state)), Mock())
+    assert plugin.mock_calls == []
+    assert framework.mock_calls == []
+    assert not (mailbox / f"{operation}.intent.json").exists()
+
+
+def test_verified_clean_target_closes_once_and_preserves_sentinel(harness, native_boundary):
+    module, mailbox = harness
+    plugin, _, state, observer = native_boundary
+    prepare_close(module, mailbox, state)
+    after = copy.deepcopy(state)
+    after["documents"].pop()
+    observer.side_effect = [state, after]
+    target = SimpleNamespace(uuid="target")
+    plugin.documents.return_value = [SimpleNamespace(uuid="sentinel"), target]
+    result = module.perform(
+        request_for("close_target", expected_snapshot=module.digest(state)), Mock()
+    )
+    plugin.closeDocument.assert_called_once_with(target)
+    plugin.newDocument.assert_not_called()
+    assert result["snapshot"] == after
+    assert (mailbox / "close_target.intent.json").exists()
+
+
+def test_target_creation_records_its_request_for_later_close(harness, native_boundary):
+    module, mailbox = harness
+    plugin, _, state, observer = native_boundary
+    state["documents"][0]["is_modified"] = True
+    save_ownership(module, mailbox, state)
+    created = copy.deepcopy(state)
+    created["documents"].append(
+        {"uuid": "target", "page_count": 0, "item_count": None, "is_modified": False}
+    )
+    after = copy.deepcopy(created)
+    after["documents"][1]["owned_content"] = None
+    observer.side_effect = [state, created, after]
+    plugin.newDocument.return_value = SimpleNamespace(uuid="target")
+    save_request(
+        mailbox,
+        request_for(
+            "create_target", request_id="target-creator", expected_snapshot=module.digest(state)
+        ),
+    )
+    module.main()
+    assert read_json(mailbox / "target-creator.receipt.json")["state"] == "completed"
+    assert read_json(mailbox / "ownership.json")["target_creator_request"] == "target-creator"
+    plugin.newDocument.assert_called_once()
+    plugin.closeDocument.assert_not_called()

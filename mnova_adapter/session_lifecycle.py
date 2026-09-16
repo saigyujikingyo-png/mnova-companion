@@ -123,10 +123,30 @@ def snapshot() -> dict:
     )
     rows = []
     for doc in DocumentPlugin.instance.documents():
+        page_count = int(doc.pageCount)
+        if page_count == 0:
+            # A session document can exist before its first canvas is available.
+            # Do not turn an unobserved canvas/item/selection state into zero.
+            row = {
+                "uuid": str(doc.uuid),
+                "page_count": 0,
+                "item_count": None,
+                "is_modified": dirty[str(doc.uuid)],
+                "current_page_uuid": None,
+                "current_page_index": None,
+                "active_item_uuid": None,
+                "selected_page_uuids": None,
+                "selected_item_uuids": None,
+                "page_observation": "not_run_no_pages",
+            }
+            if str(doc.uuid) in owned:
+                row["owned_content"] = None
+            rows.append(row)
+            continue
         page = doc.currentPage
         row = {
             "uuid": str(doc.uuid),
-            "page_count": int(doc.pageCount),
+            "page_count": page_count,
             "item_count": len(doc.pageItems()),
             "is_modified": dirty[str(doc.uuid)],
             "current_page_uuid": identity(page),
@@ -164,6 +184,57 @@ def owned_record() -> dict:
         raise RuntimeError("Sentinel creation did not complete; reconcile without mutation")
     row_for(creator["result"]["snapshot"], record["sentinel_uuid"])
     return record
+
+
+def require_target_creation(record: dict) -> None:
+    """A partial ownership claim cannot authorize a subsequent target close."""
+    try:
+        creator_id = record["target_creator_request"]
+        if (
+            not isinstance(creator_id, str)
+            or not creator_id
+            or len(creator_id) > 80
+            or not creator_id.isascii()
+            or not creator_id.replace("-", "").isalnum()
+        ):
+            raise ValueError("Invalid target creator identity")
+        receipt = json.loads((MAILBOX / (creator_id + ".receipt.json")).read_text(encoding="utf-8"))
+        if not isinstance(receipt, dict) or receipt.get("state") != "completed":
+            raise ValueError("Target creator did not complete")
+        request = receipt["request"]
+        validate_request(request)
+        if request["operation"] != "create_target" or request["request_id"] != creator_id:
+            raise ValueError("Target creator request does not match")
+        state = receipt["result"]["snapshot"]
+        if (
+            not isinstance(state, dict)
+            or type(state.get("pid")) is not int
+            or state["pid"] != record["pid"]
+            or not isinstance(state.get("documents"), list)
+        ):
+            raise ValueError("Target creator snapshot is invalid")
+        rows = state["documents"]
+        if any(
+            not isinstance(row, dict) or not isinstance(row.get("uuid"), str) or not row["uuid"]
+            for row in rows
+        ) or len({row["uuid"] for row in rows}) != len(rows):
+            raise ValueError("Target creator inventory is invalid")
+        target = row_for(state, record["target_uuid"])
+        if (
+            type(target.get("page_count")) is not int
+            or target["page_count"] < 0
+            or type(target.get("is_modified")) is not bool
+            or (target["page_count"] == 0 and target.get("item_count", "missing") is not None)
+            or (
+                target["page_count"] > 0
+                and (type(target.get("item_count")) is not int or target["item_count"] < 0)
+            )
+        ):
+            raise ValueError("Target creator document observation is invalid")
+    except (OSError, ValueError, TypeError, KeyError, RuntimeError) as exc:
+        raise RuntimeError(
+            "Target creation evidence is missing, incomplete, or inconsistent"
+        ) from exc
 
 
 def row_for(state: dict, uuid: str) -> dict:
@@ -250,6 +321,13 @@ def perform(request: dict, mark) -> dict:
         sentinel_uuid = record["sentinel_uuid"]
         sentinel_before = row_for(before, sentinel_uuid)
         require_active(before, sentinel_uuid)
+        if (
+            type(sentinel_before.get("page_count")) is not int
+            or sentinel_before["page_count"] <= 0
+            or not isinstance(sentinel_before.get("owned_content"), dict)
+            or not isinstance(sentinel_before["owned_content"].get("spectra"), list)
+        ):
+            raise RuntimeError("Sentinel content is unobserved; no mutation is permitted")
         if operation == "dirty_action":
             if sentinel_before["is_modified"] is True:
                 raise RuntimeError("Sentinel is already dirty; do not replay an edit")
@@ -275,16 +353,24 @@ def perform(request: dict, mark) -> dict:
                 if not one_new_identity(before, created, created_uuid):
                     raise RuntimeError("Target creation changed existing inventory")
                 record["target_uuid"] = created_uuid
+                record["target_creator_request"] = request["request_id"]
                 write_json(MAILBOX / "ownership.json", record)
             elif operation == "close_target":
                 target_uuid = record["target_uuid"]
                 if target_uuid == sentinel_uuid:
                     raise RuntimeError("Target cannot be the protected sentinel")
                 target_before = row_for(before, target_uuid)
-                if target_before["is_modified"] is not False or target_before["item_count"]:
+                if (
+                    target_before["is_modified"] is not False
+                    or type(target_before.get("page_count")) is not int
+                    or target_before["page_count"] <= 0
+                    or type(target_before.get("item_count")) is not int
+                    or target_before["item_count"] != 0
+                ):
                     raise RuntimeError("Only the owned clean blank target may be closed")
                 if sentinel_before != record["sentinel_baseline"]:
                     raise RuntimeError("Sentinel changed before target close")
+                require_target_creation(record)
                 target = resolve(plugin, target_uuid)
                 mutation_intent("close_target_intent", target_uuid=target_uuid)
                 plugin.closeDocument(target)

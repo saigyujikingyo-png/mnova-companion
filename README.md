@@ -1,12 +1,12 @@
 # Mnova Companion
 
-Independent open-source agent workflows for licensed MestReNova. This is a development checkpoint with native scientific writes disabled after a lifecycle acceptance failure. No stable or end-user release is available yet.
+Independent open-source agent workflows for licensed MestReNova. This is a development checkpoint with native scientific writes disabled while lifecycle acceptance remains incomplete. No stable or end-user release is available yet.
 
 ## Development state
 
 See [status and acceptance](docs/STATUS.md). The first target is a protected native 1D NMR workflow on Windows, with explicit structured tool outputs and editable native artifacts. Native, portable, host and delivery checks are separate.
 
-The [current-device Codex installation](docs/INSTALLATION.md) includes the new [icon](assets/DESIGN.md) and an independently installed runtime. The approved [next technical route](docs/NEXT_TECHNICAL_ROUTE.md) reached its first native experiment: the [session R0 result](docs/SESSION_LIFECYCLE_R0.md) failed before ownership was established. R1 and later scientific features remain unaccepted.
+The [current-device Codex installation](docs/INSTALLATION.md) includes the [icon](assets/DESIGN.md) and an independently installed runtime. After the original [R0 failure](docs/SESSION_LIFECYCLE_R0.md), the [zero-page diagnostic](docs/SESSION_DIAGNOSTIC_20260916.md) established creation and separate synthetic readback with guarded canvas access. Owned document-window activation and genuine unsaved-work protection remain unresolved. R1 and later scientific features remain unaccepted; see the [technical route](docs/NEXT_TECHNICAL_ROUTE.md).
 
 Read [shared development principles](DEVELOPMENT_PRINCIPLES.md) and [contributor instructions](AGENTS.md). The [native investigation](docs/NATIVE_API.md) records the supported metadata route and failed lifecycle gate.
 

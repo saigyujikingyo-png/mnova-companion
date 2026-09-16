@@ -1,11 +1,11 @@
 # Implementation and acceptance status
 
-Updated: 2026-09-15. Shared baseline: 2026-09-14.1.
+Updated: 2026-09-16. Shared baseline: 2026-09-14.1.
 
 | Area | State | Evidence |
 | --- | --- | --- |
 | Approved architecture | READY | User approved implementation after the Chembridge design review. |
-| Native feasibility | R0 FAILED / R1 NOT RUN | New session-lifecycle harness and exact-snapshot preflight ran; Mnova crashed before sentinel ownership was established. No dirty edit or target close ran. Acceptance mutations and production dispatch are disabled. See [R0 result](SESSION_LIFECYCLE_R0.md). The earlier [standalone failure](../acceptance/native_20260915.json) is separate evidence. |
+| Native feasibility | R0 PARTIAL / R1 NOT RUN | Zero-page canvas access is guarded; session creation, UUID, owned synthetic content and separate readback succeeded. Existing-document activation returned without changing the UI or either active-document observation. Genuine dirty-edit and close gates remain blocked. Shipped mutations and public dispatch are disabled. See [current diagnostic](SESSION_DIAGNOSTIC_20260916.md); the [original R0 failure](SESSION_LIFECYCLE_R0.md) and earlier standalone failure remain historical evidence. |
 | Core and output contracts | PORTABLE CHECKS PASS | Six typed MCP tool surfaces, input staging/artifact integrity and durable jobs. Native operations remain gated, so the planned interface is not complete. |
 | Public repository | CREATED | Independent public repository created; implementation is a development preview. |
 | Cloud environment | READY / PORTABLE SCOPE | Exact 9effac3 code checkout passed actual container setup, 171 tests plus 42 subtests (four platform skips), all portable checks and maintenance. Saved commands restored and read back. See [cloud evidence](CLOUD_SETUP.md); native/model/host delivery remain separate. |
@@ -16,17 +16,18 @@ Work order: native bootstrap and owned-document feasibility, core/contracts, 1D 
 
 ## Current next step
 
-Resolve the session-creation execution-context and ownership contract before another native mutation. The new failure interval includes creation, its returned UUID read and the first post-create snapshot; the exact faulting instruction is unknown. The [R0 decision record](SESSION_LIFECYCLE_R0.md) defines narrower checkpoints and preserves the no-replay boundary. No target close or R2 save/reopen experiment is justified by the current evidence.
+Establish a supported owned document-window creation/activation route that preserves the existing inventory. The [current diagnostic](SESSION_DIAGNOSTIC_20260916.md) narrows the original snapshot failure and records the no-op activation. Do not repeat that setter or re-register an existing document without a supported ownership contract. A genuine dirty edit and independent readback remain prerequisites for R1. R2 save/reopen is not accepted.
 
 No general installer, hosted relay, real host-model test or end-user release is claimed. This checkpoint provides portable infrastructure, a bounded current-device installation and explicit native-failure evidence.
 
-The user approved R0/R1 implementation. Its acceptance harness is implemented, but the first mutation failed at R0. The [next technical route](NEXT_TECHNICAL_ROUTE.md) now records this checkpoint; it does not claim a repaired native lifecycle.
+The user approved R0/R1 implementation and continuation. The harness and diagnostic repairs are implemented; [R0 remains partial](NEXT_TECHNICAL_ROUTE.md). No native lifetime acceptance is inferred from the successful synthetic readback.
 
 ## Portable verification for this checkpoint
 
-Local Windows checks passed: Ruff lint/format (19 files), **174 tests and 42
-subtests passed**, with one symlink-privilege skip. The new acceptance-harness
-guard tests account for 119 passing cases. Six contract schemas (19,898 UTF-8
+Local Windows checks passed: Ruff lint/format (21 files), **228 tests and 42
+subtests passed**, with one symlink-privilege skip. Lifecycle guards account for
+156 cases; execution-context and metadata-probe checks account for 14 and 10.
+Six contract schemas (19,898 UTF-8
 bytes) and actual MCP stdio structured/text parity and error branches passed.
-These checks cover the disabled harness and portable core; they do not make the
-failed native experiment pass. No runtime wheel source changed in this phase.
+These checks cover the disabled harness and portable core; they do not pass the
+remaining native gates. No runtime wheel source changed in this phase.

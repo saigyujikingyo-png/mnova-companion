@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "evidence_date": "2026-09-16",
+  "scope": "bounded_local_zero_page_diagnostic",
+  "native_build": "17.0.1-41952",
+  "embedded_python": "3.11.15",
+  "platform": "Windows",
+  "overall_state": "R0_PARTIAL_R1_NOT_RUN",
+  "production_native_mutations_enabled": false,
+  "shipped_acceptance_mutations_enabled": false,
+  "private_guarded_experiment_used": true,
+  "gates": {
+    "observed_window_thread_matches_script_thread": "PASSED_BOUNDED",
+    "single_creation_return_uuid_scope_return": "PASSED_BOUNDED",
+    "zero_page_snapshot_and_separate_readback": "PASSED_BOUNDED",
+    "owned_synthetic_sentinel_and_separate_readback": "PASSED_BOUNDED",
+    "preexisting_document_state_preservation": "PASSED_BOUNDED",
+    "existing_document_activation": "RETURNED_WITHOUT_STATE_CHANGE",
+    "genuinely_dirty_sentinel": "BLOCKED_DOCUMENT_VIEW",
+    "target_creation_close_and_post_close_readback": "NOT_RUN",
+    "native_save_reopen_export": "NOT_RUN",
+    "licence_module_entitlement": "UNVERIFIED",
+    "host_model_and_file_delivery": "NOT_RUN"
+  },
+  "observations": {
+    "new_session_document_initial_page_count": 0,
+    "unavailable_canvas_fields": null,
+    "page_observation": "not_run_no_pages",
+    "synthetic_sentinel_pages": 1,
+    "synthetic_sentinel_items": 1,
+    "synthetic_sentinel_points": 16384,
+    "synthetic_sentinel_nucleus": "1H",
+    "synthetic_sentinel_frequency_mhz": 400.0,
+    "synthetic_sentinel_is_modified": false,
+    "synthetic_sentinel_real_sha256": "98ce54e1b07421d18909223e7da8d0b07a201062e1c7d61207a3e2f14d251598",
+    "post_scope_readback_equals_creation_snapshot": true,
+    "activation_called_once": true,
+    "activation_scope_returned": true,
+    "activation_readback_equals_precondition": true,
+    "startup_document_remained_active": true,
+    "add_document_called": false,
+    "native_crash_observed_in_new_diagnostics": false
+  },
+  "existing_dump_analysis": {
+    "exception_code": "0xC0000005",
+    "read_address": "0x30",
+    "identified_function": "QtCanvas::allItems() const",
+    "null_receiver": true,
+    "binding_static_chain": "Document.activeItem",
+    "dump_alone_establishes_page_count": false,
+    "independent_debugger_backtrace": false,
+    "generated_or_uploaded_by_agent": false
+  },
+  "executed_source_sha256": {
+    "execution_context": "a2017b724336c4cb8aec2090546d1e8673b2ad28824ab9201daa9e42b2e4056b",
+    "scalar_creation": "855a2fa0dec3e542760c058f0d6f7929788ed3f912a255854d8c46d1da4acc4c",
+    "sentinel_and_initial_readback_harness": "48e57fdabd6900c399dea60ce9276fc93dbd5d91b1c8d2a0680b7004ebe2cff5",
+    "activation": "3bcfa7399afd3027716bcf9ac98fba34b986b6e32dbbed5a9f5c86a1a215b34f",
+    "guarded_harness_activation_readback": "31b930fd26c4031718f75b7b71144728999db564130f613e47f5346d2737bad7"
+  },
+  "limitations": [
+    "An equal observed window thread does not establish vendor ownership or reentrancy semantics.",
+    "Session membership does not establish a visible editable document window.",
+    "The earlier retained-JavaScript cleanup failure remains a separate rejected route.",
+    "Historical creation intents and the no-op activation claim remain preserved without replay.",
+    "The installed runtime core, six public tools and native dispatch gate are unchanged.",
+    "Portable checks, CI, cloud environment, native execution and host delivery are separate evidence."
+  ]
+}

@@ -1,14 +1,16 @@
 # Assessment and next technical route
 
-Status: **R0 IMPLEMENTED AND FAILED; R1 NOT RUN**.
-Date: 2026-09-15. Shared baseline: Chembridge 2026-09-14.1.
+Status: **R0 PARTIAL; OWNED DOCUMENT VIEW BLOCKED; R1 NOT RUN**.
+Date: 2026-09-16. Shared baseline: Chembridge 2026-09-14.1.
 
 The original review delivered the requested icon, installation, assessment and
 technical plan, then stopped before coding. The user subsequently approved the
 next implementation phase. Its bounded R0/R1 harness is now implemented, but the
 first session-creation experiment failed before sentinel ownership was established.
-See the [R0 result and current decision](SESSION_LIFECYCLE_R0.md). Native writes
-remain disabled and the R1 close experiment was not run.
+The subsequent [zero-page diagnostic](SESSION_DIAGNOSTIC_20260916.md) narrowed that
+failure, fixed unsafe canvas observation, and passed owned synthetic creation and
+separate readback. Existing-document activation was a no-op. Native writes remain
+disabled and the R1 close experiment was not run.
 
 ## 1. Current assessment
 
@@ -20,8 +22,8 @@ incomplete. Six discoverable tools do not imply six accepted scientific workflow
 | Icon and local host wiring | READY on this device | Original icon installed and hash-checked; personal plugin installed/enabled; non-editable runtime verified from outside the checkout. |
 | Portable contracts/files/jobs | READY within tested scope | Existing Windows/Ubuntu CI passed; six installed MCP calls validated. Preserve this core. |
 | Scientific processing | BLOCKED | No accepted raw-data import, processing, integrals, save/reopen or export. Keep native writes disabled. |
-| Native lifetime | R0 FAILED / R1 NOT RUN | Old cross-language cleanup failed; the subsequent Python session-creation candidate also failed before ownership was established. Its temporary JS dirty observer is read-only. |
-| Cloud implementation checks | READY at the checked core revision | Existing browser-account switching restored the original environment without new credentials or a duplicate. Exact e861d52 checkout: 52 tests passed, 4 Windows-only skips, contracts/stdio/source checks passed; configuration restoration is recorded separately in CLOUD_SETUP.md. |
+| Native lifetime | R0 PARTIAL / R1 NOT RUN | Guarded zero-page observation, session creation and separate synthetic readback passed. A visible owned document and true dirty state remain unresolved. The old cross-language cleanup route remains rejected. |
+| Cloud implementation checks | READY at the recorded revision | The original environment is reused without new credentials or a duplicate. Exact checked revisions and actual container results are recorded in CLOUD_SETUP.md; later source revisions require their own checks. |
 | Ordinary-user distribution | PARTIAL | Current device runs without a source checkout; the private venv still needs its existing Python base. No standalone installer, update/removal or clean-device acceptance. |
 | Hosts, models and delivery | UNVERIFIED beyond direct local protocol | No new-task model call, Terra max workflow, remote adapter or received native artifact is accepted. |
 
@@ -37,11 +39,12 @@ incomplete. Six discoverable tools do not imply six accepted scientific workflow
    readback established the working route. No credentials or duplicate environment
    were needed. See [cloud evidence](CLOUD_SETUP.md).
 
-The original native crash has **not** been repaired. A newly implemented session
-candidate was tested after approval and produced a separate creation-stage crash.
-The executed source and unresolved intent are retained privately; both production
-and acceptance mutation entrypoints are disabled. This is containment, not a
-confirmed lifetime repair.
+The original retained-JS cleanup failure remains unresolved. The separate
+session-creation failure has now been narrowed to a null canvas getter, with an
+independent zero-page creation observation supporting the snapshot fix. Its
+historical source and intent are retained. Public production and acceptance
+mutation entrypoints remain disabled; successful creation is not full lifecycle
+acceptance.
 
 ## 2. Root-cause hypothesis and evidence boundary
 
@@ -75,8 +78,8 @@ so a merely nonempty sentinel cannot count as unsaved-work protection.
 Retain the host-neutral Python core, six public tools and typed output contracts.
 Replace the experimental standalone/cross-language lifetime approach with one
 candidate: **session-owned creation and closure through Python**, with a temporary
-read-only JS observer for the dirty flag. The first R0 run failed; the route below
-remains unaccepted.
+read-only JS observer for the dirty flag. R0 now passes creation and separate
+readback, while window activation and dirty-state prerequisites remain unaccepted.
 
 ```mermaid
 flowchart LR
@@ -118,7 +121,7 @@ default. Vendor support contact requires separate authorization to send.
 
 | Stage | Bounded work after approval | Required result before continuing |
 | --- | --- | --- |
-| R0: Resolve native preconditions — FAILED | Read-only preflight passed; the first session creation failed before ownership was established. No dirty action ran. | Resolve creation execution-context and ownership before a narrower diagnostic. Authentic dirty sentinel remains required; no window-title flag substitute. |
+| R0: Resolve native preconditions — PARTIAL | Guarded zero-page snapshot, creation, UUID, scope return and independent synthetic readback passed. Existing-document activation was a no-op. No dirty action ran. | Establish an owned document view without replacing existing documents, then prove an authentic dirty edit and separate readback. No window-title flag substitute. |
 | R1: Pure-Python lifetime experiment | Use only task-owned sentinel and target documents; inventory before/after; close only the target once; let Python scope end; execute a later read-only probe. | Only target disappears; sentinel content, dirty state and active selection survive; no unexpected prompt handling, process failure or late destructor failure. |
 | R2: Save and fresh readback | Save a synthetic native result, release it using accepted R1, then load from disk and compare document/spectral semantics. | Nonempty `.mnova`, hash/size, dimensions, nucleus, points, axes, signal and intended annotations match; editability verified. Save exit alone fails this gate. |
 | R3: One 1D vertical workflow | Start with one authorized synthetic/public 1H raw fixture, explicit processing settings, reference and peaks/integrals. Export native document plus PNG/PDF and a table. | Numerical expectations with declared tolerances, unchanged raw bytes, reopen equality, inspected figures and provenance. Add 13C only as a separately checked recipe. |
@@ -144,17 +147,24 @@ turn on all four planned `mnova_run` operations, build a hosted relay, or implem
 full packaging while R0/R1 remain unresolved. Each accepted native operation gets
 its own typed request/result schema before runtime exposure.
 
-The approved task's deliverable is now the implemented harness, focused guard
-tests and [R0 failure/decision record](SESSION_LIFECYCLE_R0.md). The failed result
-does not authorize progression to R1 or R2. Estimated durations remain withheld
-until native preconditions are resolved.
+The current deliverable includes the harness, zero-page guards, process/window
+context diagnostic, strict target-close evidence checks and
+[diagnostic record](SESSION_DIAGNOSTIC_20260916.md). R1 still requires true dirty
+state and a supported owned window; R2 is not enabled. Estimated durations remain
+withheld until native preconditions are resolved.
 
 ## 6. Current handoff
 
-R0/R1 development was approved. R0 failed and R1 did not start. Preserve the
-creation intent and exact executed source; do not rerun by changing request IDs.
-The next diagnostic must first address the missing execution-context and binding
-ownership evidence, then separate creation, UUID read and post-create observation
-into individual checkpoints. Do not enable save/reopen, scientific operations or
-a hosted relay from this result. Earlier cloud and installed-core evidence remains
-separate from the new native failure.
+R0/R1 development and continuation were approved. Preserve all historical intents
+and exact executed sources. The separated creation/UUID/scope/readback sequence
+passed with a zero-page canvas guard. A single existing-document setter returned
+without changing either active observer or the visible startup tab; do not replay
+it or assume session enumeration proves a document view.
+
+Next establish a documented main-window creation route, with unique new identity,
+current window-thread evidence and original inventory preservation. A bounded
+`action_File_New` callback is a candidate; it remains untested. Prove a genuine
+GUI-backed dirty edit and separate readback before target creation/close. Never
+use unobserved `null` counts as blank-target evidence. Keep R2, scientific
+operations and hosted relays gated. Cloud, installed core and native evidence
+remain independent.

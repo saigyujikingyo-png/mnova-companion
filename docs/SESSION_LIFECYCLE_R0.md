@@ -2,6 +2,11 @@
 
 Date: 2026-09-15. State: **R0 FAILED; R1 NOT RUN**.
 
+Historical checkpoint. The [2026-09-16 diagnostic](SESSION_DIAGNOSTIC_20260916.md)
+subsequently narrowed the snapshot failure and passed creation/readback with a
+zero-page guard. Genuine dirty state and R1 remain unaccepted. The observations
+and original failed receipt below are preserved as recorded.
+
 The user approved the next implementation phase after reviewing the technical
 route. This checkpoint implemented its bounded R0/R1 acceptance harness and ran
 R0 on the installed Windows build. It did not establish a native lifetime fix.

@@ -1,8 +1,10 @@
 """The acceptance harness must fail closed without invoking vendor code."""
 
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -44,3 +46,60 @@ def test_existing_receipt_prevents_probe_replay(harness, receipt_suffix):
     module.main()
     assert receipt.read_text(encoding="utf-8") == "{}"
     assert len(list(mailbox.iterdir())) == 2
+
+
+def test_inventory_skips_page_items_attribute_for_zero_pages(harness):
+    module, _ = harness
+
+    class ZeroPageDocument:
+        uuid = "synthetic-zero-page"
+        pageCount = 0
+
+        @property
+        def pageItems(self):
+            pytest.fail("Zero-page document must not expose pageItems to the probe")
+
+    plugin = SimpleNamespace(documents=lambda: [ZeroPageDocument()])
+
+    inventory = module.document_inventory(plugin)
+
+    assert inventory == [
+        {
+            "identity_hash": hashlib.sha256(b"synthetic-zero-page").hexdigest(),
+            "page_count": 0,
+            "page_item_count": None,
+            "page_observation": "not_run_no_pages",
+        }
+    ]
+    assert json.loads(json.dumps(inventory))[0]["page_item_count"] is None
+
+
+@pytest.mark.parametrize("items", [[], [object(), object()]])
+def test_inventory_preserves_nonzero_page_output_and_reads_count_first(harness, items):
+    module, _ = harness
+    observations = []
+
+    class PagedDocument:
+        uuid = "synthetic-paged"
+
+        @property
+        def pageCount(self):
+            observations.append("page_count")
+            return 1
+
+        @property
+        def pageItems(self):
+            assert observations == ["page_count"]
+            observations.append("page_items")
+            return lambda: items
+
+    plugin = SimpleNamespace(documents=lambda: [PagedDocument()])
+
+    assert module.document_inventory(plugin) == [
+        {
+            "identity_hash": hashlib.sha256(b"synthetic-paged").hexdigest(),
+            "page_count": 1,
+            "page_item_count": len(items),
+        }
+    ]
+    assert observations == ["page_count", "page_items"]

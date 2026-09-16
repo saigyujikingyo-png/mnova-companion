@@ -4,6 +4,12 @@ Evidence date: 2026-09-15. Observed Mnova build: **17.0.1-41952** on Windows.
 Observed embedded Python: **3.11.15**. The external core uses a separate Python
 environment. No packages were installed into the embedded interpreter.
 
+Follow-up: the [2026-09-16 session diagnostic](SESSION_DIAGNOSTIC_20260916.md)
+guards zero-page canvas observation and passed session creation plus independent
+synthetic readback. R0 remains partial because the owned document view and genuine
+dirty state are not established. The earlier experiments below remain historical
+evidence; the retained-JS cleanup route remains rejected.
+
 ## Result
 
 **P0 native lifecycle: FAILED. Native mutations are disabled.** Read-only Python

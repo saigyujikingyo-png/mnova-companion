@@ -25,14 +25,21 @@ def write_json(path: Path, value: dict) -> None:
 
 def document_inventory(plugin) -> list[dict]:
     """Read identity/counts only; never read unrelated scientific content."""
-    return [
-        {
+    inventory = []
+    for doc in plugin.documents():
+        page_count = int(doc.pageCount)
+        entry = {
             "identity_hash": hashlib.sha256(str(doc.uuid).encode("utf-8")).hexdigest(),
-            "page_count": int(doc.pageCount),
-            "page_item_count": len(doc.pageItems()),
+            "page_count": page_count,
+            "page_item_count": None,
         }
-        for doc in plugin.documents()
-    ]
+        if page_count == 0:
+            # Avoid pageItems access when the document has no page.
+            entry["page_observation"] = "not_run_no_pages"
+        else:
+            entry["page_item_count"] = len(doc.pageItems())
+        inventory.append(entry)
+    return inventory
 
 
 def probe() -> dict:
