@@ -66,12 +66,18 @@ authentication and executor launch/identity validation belong to later integrati
 
 ## Compatibility and limits
 
-Historical records without new fields remain readable without rewriting bytes.
+Historical records without new fields remain readable without rewriting bytes
+when their requests satisfy the P0 wire bounds: 128 KiB encoded size, depth 16,
+10,000 nodes and signed 64-bit integers. The older reader accepted requests
+outside these bounds; the new reader rejects those records conservatively and
+leaves their files intact. Preserve the old reader and originals for separate
+review; rejection is not permission to erase, recreate or replay a job.
 Old active/unknown records and leases are unfenced: no attempt identity is
 invented and no completion permission inferred. Historical terminal results gain
 no native verification. New records are incompatible with the older strict reader;
-use separate state for an older runtime during rollback. The installed runtime
-and its state were not migrated or upgraded by P0 source changes.
+use separate state for an older runtime during rollback. The original P0 source checkpoint did not upgrade the installed runtime.
+The dev2 [installation procedure](INSTALLATION.md) requires separate runtime
+and state identities, a fresh inventory and independently verified package bytes.
 
 Internal claim, arbitrary phase and complete(job_id, dict) APIs were replaced
 with typed preparation/receipts/completion. They had no enabled native production

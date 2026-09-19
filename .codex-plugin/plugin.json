@@ -1,7 +1,7 @@
 {
   "name": "mnova-companion",
-  "version": "0.1.0-dev.1",
-  "description": "Development checkpoint: portable MCP contracts, files and jobs; native scientific writes are disabled.",
+  "version": "0.1.0-dev.2",
+  "description": "Development preview: fenced fake execution and conservative unknown-job handling; native scientific writes remain disabled.",
   "author": {
     "name": "Mnova Companion contributors"
   },
@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "Mnova Companion",
     "shortDescription": "MCP development checkpoint for Mnova.",
-    "longDescription": "Portable source checkpoint with native writes disabled after a lifecycle failure. No end-user installer, host integration or scientific workflow is accepted yet.",
+    "longDescription": "Portable P0 development preview with typed dispatch, durable receipts and conservative unknown-effect quarantine. Developer-assisted local installation remains separate from native, host-model and scientific acceptance.",
     "developerName": "Mnova Companion contributors",
     "category": "Productivity",
     "brandColor": "#07394C",

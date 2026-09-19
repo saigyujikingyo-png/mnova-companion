@@ -1,6 +1,6 @@
 # Mnova Companion lifecycle record
 
-Record version: **1.0**. Observation date: **2026-09-19**.
+Record version: **1.1**. Observation date: **2026-09-19**.
 Shared rule version: **2026-09-19.1**;
 [runtime contract](../RUNTIME_LIFECYCLE.md): **1.0**.
 Shared documents are pinned to published Chembridge commit
@@ -15,27 +15,20 @@ behavior or close [CB-2026-001](../governance/incidents/CB-2026-001.md).
 ## Source, package and evidence identity
 
 Repository: [Mnova Companion](https://github.com/saigyujikingyo-png/mnova-companion).
-Default and working branch: `codex/initial-preview`.
-Current base commit: `7f09b68fb1f6e4f68528c0e827e2e12dbd5e61f0`, plus the
-preserved, unpublished [P0 source increment](P0_EXECUTION.md).
-Source version remains `0.1.0.dev1`; no release or package is produced by this
-documentation change. The nine implementation hashes in the
-[P0 receipt](../acceptance/p0_portable_20260916.json) still match.
+The dev2 source candidate is developed on `codex/p0-preview-dev2`, from base
+`7f09b68fb1f6e4f68528c0e827e2e12dbd5e61f0`. Source version `0.1.0.dev2`
+separately identifies the approved [P0 implementation](P0_EXECUTION.md) and the
+reviewed shared-rule adoption. The [fresh portable receipt](../acceptance/preview_dev2_20260919.json)
+binds tested source hashes; release provenance must bind the exact source
+revision and wheel/sdist hashes. This record does not establish installation.
 
-The current-device installed package also reports `0.1.0.dev1`, but it is an
-older implementation: its historical installation receipt binds
-`e861d5297e8d9c1c17284998c25bb8ae363cacde`.
-On 2026-09-19 its eight package source files still matched their RECORD
-hashes/sizes; `execution.py` was absent. Plugin source/cache connection
-configuration matched the retained installation identity.
-Version text alone does not distinguish these two implementations.
-[Installation evidence](INSTALLATION.md) remains separate from source checks.
-
-The current readback covers Git identities, preserved source hashes, static
-installed files and VM configuration. It does not include a fresh MCP invocation,
-native call, VM start, installed upgrade or OS-event test. Historical portable,
-CI, cloud, direct installed-protocol and native observations retain their
-original dates and scopes.
+The pre-upgrade `0.1.0.dev1` installation is a distinct older implementation,
+recorded at `e861d5297e8d9c1c17284998c25bb8ae363cacde`. Static takeover readback
+found its eight source files matching RECORD, with `execution.py` absent.
+Keep those observations and the [historical P0 receipt](../acceptance/p0_portable_20260916.json)
+unchanged. Native and VM evidence retains its original dates and scopes.
+The [installation guide](INSTALLATION.md) separates runtime and state identities,
+installed protocol verification, rollback and host/model acceptance.
 
 ## Components and owners
 
@@ -51,8 +44,8 @@ Implementation references: [stdio](../src/mnova_companion/server.py),
 [jobs](../src/mnova_companion/jobs.py),
 [fake protocol](../src/mnova_companion/execution.py),
 [staging/artifacts](../src/mnova_companion/artifact_store.py).
-These links refer to the checkout. They do not describe the older installed
-package as though it contained P0.
+These links describe the dev2 source. Each installed package requires its own
+source/hash and protocol readback; the older dev1 package does not contain P0.
 
 A narrow 2026-09-19 process sample found runtime-path Python frontends with the
 agent host as parent. Task-to-process mapping and complete lifecycle ownership
@@ -107,13 +100,13 @@ duplicate staging. No speculative pending-directory cleanup is authorized.
 | Event | Implemented behavior / owner | Evidence or required gate |
 | --- | --- | --- |
 | Host connect/disconnect and EOF | Host starts stdio; SDK/asyncio manage transport. No native child is started by the frontend. | Historical direct installed protocol only. Current EOF/drain, failed-connect and in-flight staging behavior remain unverified. |
-| Crash, retry and concurrent frontends | Metadata lock is OS-held; P0 keeps consumed attempts, unknown records and durable leases. No startup scan dispatches jobs or steals a lease by age/PID. | Historical portable P0 fixtures. Concurrent real-host frontends and failure cleanup need their own checks; preserve ambiguous owners. |
+| Crash, retry and concurrent frontends | Metadata lock is OS-held; P0 keeps consumed attempts, unknown records and durable leases. No startup scan dispatches jobs or steals a lease by age/PID. | Portable P0 fixtures. Concurrent real-host frontends and failure cleanup need their own checks; preserve ambiguous owners. |
 | Cancellation | Public observation/cancellation is metadata-based. P0 distinguishes unconsumed cancellation from requested cancellation after consumption. | No implied effect reversal, process kill, native close or safe-completion guarantee. Installed old behavior must be tested separately. |
 | Boot, logon and reboot | No implemented product autostart service or automatic executor resumption. | Restart of the host/frontend does not authorize job replay. OS-event recovery and power-loss durability are unaccepted. |
 | Network unavailable/restored | Current product is local stdio with local storage; no implemented remote reconnect loop. | Remote binding/retry behavior is unimplemented. Do not add a tunnel or promise service recovery from this record. |
 | Sleep/resume, logoff and shutdown | No product-specific supervisor or accepted transition contract. | Preserve state and unknown effects; inspect/reconcile after interruption. No workstation transition was tested in this update. |
 | Explicit stop or disabled startup | No product supervisor that should override an explicit stop; native sessions are not frontend-owned cleanup targets. | Host graceful-stop/abrupt-stop behavior remains unverified. Do not terminate unrelated sessions or host-owned frontends. |
-| Upgrade, reinstall and rollback | Versioned runtime strategy is documented; P0 source has not upgraded the installed package. | Prove exact old/new runtime ownership and isolated state before migration; preserve configuration, unknown jobs and usable rollback. |
+| Upgrade, reinstall and rollback | Versioned runtime and separate-home strategy is documented; installation requires exact package/configuration evidence. | Prove exact old/new runtime ownership and isolated state before migration; preserve configuration, unknown jobs and usable rollback. |
 | Uninstall and retained data | Host plugin removal and separate private runtime/state cleanup have different scopes. | Removal/reinstall and retained-data policy need acceptance. No cleanup of user artifacts, native sessions or other plugins is implied. |
 
 ## Installation and state migration
@@ -125,16 +118,17 @@ package. This documentation adoption edits no installed launcher, host cache,
 registration, runtime or state.
 
 P0 writes version-2 records that the older strict installed reader cannot
-consume. Existing historical records remain readable by the newer checkout,
+consume. Historical records within the new bounded-wire limits remain readable,
 but old active/unknown records do not gain invented fencing or completion
 authority. Upgrade/rollback must keep older and P0 state isolated and prove
 that old and new owners cannot operate incompatible records concurrently.
 A runtime replacement alone is not state migration.
 
-Before a later upgrade, record exact source/wheel/launcher identities, preserve
+Before an upgrade, record exact source/wheel/launcher identities, preserve
 old runtime and state, reconcile proven owners, define compatibility and rollback,
 and independently verify the installed protocol. Native, host, OS-event and
-fresh-device acceptance remain separate. No silent P0 install is authorized.
+fresh-device acceptance remain separate. This record alone does not authorize
+installation or native actions.
 
 ## Native and I0 boundaries
 
@@ -161,16 +155,15 @@ belong to P1, not an invented native prerequisite for the earlier OS-only gate.
 | Layer | Evidence as of 2026-09-19 | Still open |
 | --- | --- | --- |
 | Shared rules / ownership | Baseline adopted in source; verified Max takeover accepted by governance. | Runtime conformance and incident closure remain independent. |
-| Portable P0 | Historical 2026-09-16: 341 tests and 42 subtests, two skips; nine implementation hashes still match. | New bounded lifecycle fault coverage on an exact candidate; no new test pass inferred from this doc edit. |
-| CI / cloud | Historical exact-revision receipts at `7f09b68` / `77f6dac`; live GitHub state rechecked. | Dirty P0 is absent from those revisions; saved-cloud/model execution not rerun. |
-| Installed package | Current static source/configuration integrity; old package lacks P0. | Fresh calls, lifecycle/upgrade/rollback and new-device acceptance. |
+| Portable P0 | Historical receipt retained; fresh dev2 candidate checks recorded separately. | Broader frontend lifecycle faults and native executor integration remain open. |
+| CI / cloud | Historical exact-revision receipts at `7f09b68` / `77f6dac`; live GitHub state rechecked. | P0 is absent from those historical revisions; saved-cloud/model execution not rerun. |
+| Installed package | Historical dev1 integrity retained; each dev2 installation needs exact package/configuration and fresh calls. | Live upgrade/rollback, frontend lifecycle and new-device acceptance remain distinct. |
 | Native / VM | Historical bounded R0; failed R1; current static I0 observation. | I0 acceptance, supported native lifecycle and scientific workflows. |
 | Host / model / delivery | Historical direct installed MCP only; local artifact integrity is a separate layer. | Real host-model workflow, Terra max benchmark and received original files/attachments. |
 
-The current increment is documentation-only: review the baseline adoption and
-dated status correction while preserving the pre-existing dirty implementation
-and its checkpoint. Missing manual VM results remain unknown and are not needed
-to state that accurately.
+The dev2 increment publishes the approved portable checkpoint separately from
+reviewed baseline adoption and package preparation. Original dirty work and
+private checkpoints remain preserved. Missing manual VM results remain unknown.
 
 Later portable lifecycle work needs its own bounded plan and checks for EOF,
 failed initialization, in-flight cancellation, abrupt exit and ownership.

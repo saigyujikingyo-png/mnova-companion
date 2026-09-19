@@ -11,8 +11,8 @@ receipts and recovery using fake execution. Native calls remain disabled and
 source changes do not automatically upgrade the installed runtime.
 
 The [product lifecycle record](docs/LIFECYCLE.md) adopts shared baseline
-2026-09-19.1 and separates current stdio behavior, unpublished portable P0,
-the older installed package and remaining lifecycle gates. The dated
+2026-09-19.1 and separates current stdio behavior, the `0.1.0.dev2` portable
+preview, exact installed-package evidence and remaining lifecycle gates. The dated
 [I0 environment record](docs/I0_ENVIRONMENT.md) reports a powered-off guest
 with a NAT setup exception and unknown manual completion; I0 is not accepted.
 
@@ -24,7 +24,10 @@ Read [shared development principles](DEVELOPMENT_PRINCIPLES.md) and [contributor
 
 Use Python 3.12 and uv, then run `uv sync --locked`. The matching cloud setup and maintenance entrypoint is `bash scripts/setup_codex_cloud.sh`. Dependencies are locked in `uv.lock`; the embedded Mnova interpreter remains separate. Ordinary-user packaging is not yet available.
 
-Run the development MCP server with `uv run python -m mnova_companion`. It exposes status, help, authorised input staging, gated native requests, durable job observations and registered artifact access. Input staging does not open a native Mnova document. Select input roots through the owner-controlled `MNOVA_ALLOWED_INPUT_ROOTS` JSON-array environment setting; the default permits no input directories. `MNOVA_COMPANION_HOME` optionally selects the private local runtime directory.
+Run the development MCP server with `uv run python -m mnova_companion`. It exposes status, help, authorised input staging, gated native requests, durable job observations and registered artifact access. Input staging does not open a native Mnova document. Select input roots through the owner-controlled `MNOVA_ALLOWED_INPUT_ROOTS` JSON-array environment setting; the default permits no input directories. `MNOVA_COMPANION_HOME` selects the private local state and artifact home. For
+upgrades, explicitly select a separate versioned home after the preservation
+checks in [the installation guide](docs/INSTALLATION.md); the default path is
+not a migration mechanism and must not be shared with an older runtime.
 
 ## Verification
 

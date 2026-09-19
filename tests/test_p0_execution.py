@@ -18,7 +18,7 @@ from mnova_companion.execution import (
     Receipt,
     receipt_digest,
 )
-from mnova_companion.jobs import JobConflict, JobStore
+from mnova_companion.jobs import JobConflict, JobRecordError, JobStore
 
 
 @pytest.fixture
@@ -460,3 +460,32 @@ def test_interruption_at_each_phase_never_becomes_an_automatic_retry(env, comple
         store.complete(dispatch.identity)
     assert store.read(dispatch.identity.job_id)["state"] == "outcome_unknown"
     assert (store.root / "native.lock").exists()
+
+
+@pytest.mark.parametrize(
+    "legacy_value", [2**63, "x" * (128 * 1024)], ids=["integer-overflow", "oversized-request"]
+)
+def test_over_limit_legacy_request_is_rejected_without_rewriting(env, legacy_value):
+    store, profile, handshake = env
+    job = store.submit("old-request", {"operation": "probe"})
+    legacy = {
+        key: value
+        for key, value in job.items()
+        if key not in {"record_version", "record_revision", "execution"}
+    }
+    legacy["request"] = {"operation": "probe", "value": legacy_value}
+    encoded_request = json.dumps(legacy["request"], sort_keys=True, separators=(",", ":"))
+    legacy["fingerprint"] = hashlib.sha256(encoded_request.encode()).hexdigest()
+    legacy.update(state="outcome_unknown", phase="reconciliation_required")
+    path = store.records / f"{job['job_id']}.json"
+    original = json.dumps(legacy).encode()
+    path.write_bytes(original)
+    restarted = JobStore(store.root)
+    with pytest.raises(JobRecordError):
+        restarted.read(job["job_id"])
+    with pytest.raises(JobRecordError):
+        restarted.cancel(job["job_id"])
+    with pytest.raises((JobRecordError, JobConflict)):
+        prepare((restarted, profile, handshake), key="cannot-bypass-legacy")
+    assert path.read_bytes() == original
+    assert not (store.root / "native.lock").exists()

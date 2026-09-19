@@ -2,7 +2,22 @@
 
 Updated: 2026-09-19. Shared baseline: 2026-09-19.1.
 
-## Current checkpoint — 2026-09-19
+## dev2 portable preview — 2026-09-19
+
+Source version `0.1.0.dev2` identifies the approved fake-only P0 implementation,
+reviewed shared-rule adoption and a documented legacy-record compatibility
+boundary. Fresh candidate checks are recorded in the
+[dev2 portable receipt](../acceptance/preview_dev2_20260919.json).
+Package provenance and actual installation results must be read from the
+matching release/installation receipt; a source version is not an installation
+claim. Native mutations and target close remain disabled. VM, P1, scientific,
+host-model, delivery, EOF/crash and clean-device acceptance remain open.
+
+The following adoption and 2026-09-16 sections are historical observations.
+Their old installed-version and unpublished-source statements describe those
+checkpoints, before the separately versioned dev2 candidate.
+
+## Historical adoption checkpoint — 2026-09-19
 
 Governance accepted the verified Product Max handoff. Ownership is MIGRATED;
 product acceptance is unchanged. Shared rule adoption and the new

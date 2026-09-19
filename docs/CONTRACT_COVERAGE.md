@@ -1,6 +1,6 @@
 # Contract and operation coverage
 
-Contract version: 1.0. Package: 0.1.0.dev1. Public outputs are generated from shared typed definitions, validated in the service and emitted as structuredContent plus consistent JSON text. Media bytes are separate MCP content blocks.
+Contract version: 1.0. Package: 0.1.0.dev2. Public outputs are generated from shared typed definitions, validated in the service and emitted as structuredContent plus consistent JSON text. Media bytes are separate MCP content blocks.
 
 | Tool / operation | Implemented and tested | Remaining acceptance |
 | --- | --- | --- |
