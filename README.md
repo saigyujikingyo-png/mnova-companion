@@ -10,6 +10,12 @@ The approved [C3/P0 increment](docs/P0_EXECUTION.md) hardens portable dispatch,
 receipts and recovery using fake execution. Native calls remain disabled and
 source changes do not automatically upgrade the installed runtime.
 
+The [product lifecycle record](docs/LIFECYCLE.md) adopts shared baseline
+2026-09-19.1 and separates current stdio behavior, unpublished portable P0,
+the older installed package and remaining lifecycle gates. The dated
+[I0 environment record](docs/I0_ENVIRONMENT.md) reports a powered-off guest
+with a NAT setup exception and unknown manual completion; I0 is not accepted.
+
 The [current-device Codex installation](docs/INSTALLATION.md) includes the [icon](assets/DESIGN.md) and an independently installed runtime. After the original [R0 failure](docs/SESSION_LIFECYCLE_R0.md), the [zero-page diagnostic](docs/SESSION_DIAGNOSTIC_20260916.md) established guarded creation and synthetic readback. The subsequent [main-window R0 route](docs/SESSION_LIFECYCLE_R1.md) established a visible owned document and genuine dirty state. R1 failed: the target-close sequence removed the protected synthetic sentinel while leaving its intended target present. The close path is independently disabled; later scientific features remain blocked. See the [technical route](docs/NEXT_TECHNICAL_ROUTE.md).
 
 Read [shared development principles](DEVELOPMENT_PRINCIPLES.md) and [contributor instructions](AGENTS.md). The [native investigation](docs/NATIVE_API.md) records the supported metadata route and failed lifecycle gate.

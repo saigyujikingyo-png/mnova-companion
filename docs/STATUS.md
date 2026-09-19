@@ -1,6 +1,36 @@
 # Implementation and acceptance status
 
-Updated: 2026-09-16. Shared baseline: 2026-09-14.1.
+Updated: 2026-09-19. Shared baseline: 2026-09-19.1.
+
+## Current checkpoint — 2026-09-19
+
+Governance accepted the verified Product Max handoff. Ownership is MIGRATED;
+product acceptance is unchanged. Shared rule adoption and the new
+[lifecycle record](LIFECYCLE.md) describe implemented behavior and outstanding
+gates; they do not establish runtime conformance.
+
+| Area | Current evidence | Boundary |
+| --- | --- | --- |
+| Source / repository | Default and working branch `codex/initial-preview`, base `7f09b68fb1f6e4f68528c0e827e2e12dbd5e61f0`; unpublished P0 implementation and its checkpoint retained. No release or tag was observed. | The nine P0 implementation hashes match the historical receipt; no new product test run or publication is claimed. |
+| Installed runtime | Static readback of the older `0.1.0.dev1` package: eight source files match RECORD/hash identity; connection configuration matches the retained installation record; `execution.py` is absent. | P0 is not installed. Version text alone is insufficient; old/new state isolation and independent upgrade/rollback acceptance are required. |
+| I0 diagnostic environment | Read-only configuration at 11:38 UTC: powered off, one NAT adapter, other adapters disabled, clipboard/drag/drop disabled, only a preserved fault snapshot. | Manual recovery, guest completion/activation and rollback outcomes are UNKNOWN. This is neither an ongoing-installation claim nor an accepted baseline. [I0 record](I0_ENVIRONMENT.md). |
+| Native gates | `MUTATIONS_ENABLED=False` and `TARGET_CLOSE_ENABLED=False`; historical R0 remains bounded and R1 remains FAILED. | No native, VM, P1, save/reopen or scientific acceptance follows from takeover. |
+| Connection lifecycle | Host-owned local stdio frontend; portable fake P0 journal; production native executor and remote connector unimplemented. | EOF/crash/OS-event behavior, installed migration and host/model/delivery remain separate gaps. Multiple frontends alone do not establish a leak. |
+
+The authorized increment for this checkpoint is documentation-only baseline
+adoption and dated status correction. Preserve the original failed receipts,
+all pre-existing dirty work and the private handoff checkpoint. Missing manual
+VM results remain unknown; the owner need not repeat them merely to document
+that uncertainty. I0 must be accepted independently before any separately
+authorized P1 work. P0 installation, VM actions and native experiments are
+outside this increment.
+
+## Historical status ledger — 2026-09-16
+
+The following table and historical sections retain the previous checkpoint.
+Installation-progress, network and readiness wording below describes that dated
+observation; the current checkpoint above supersedes it. Historical baseline:
+2026-09-14.1. Original acceptance receipts remain unchanged.
 
 | Area | State | Evidence |
 | --- | --- | --- |
@@ -17,7 +47,7 @@ Updated: 2026-09-16. Shared baseline: 2026-09-14.1.
 
 Work order: native bootstrap and owned-document feasibility, core/contracts, 1D workflow, packaging/local host, remote hosts, benchmarks and scoped release. If a native gate cannot pass, record the observed limitation without claiming the workflow works.
 
-## Current next step
+## Historical next-step record — 2026-09-16
 
 The owner-approved [P0 portable boundary](P0_EXECUTION.md) is complete in the local
 working tree. The owner subsequently authorized [I0 preparation](I0_ENVIRONMENT.md)
@@ -36,7 +66,7 @@ No general installer, hosted relay, real host-model test or end-user release is 
 
 The user approved R0/R1 implementation and continuation. Main-window R0 is accepted only within the [recorded bounded experiment](SESSION_LIFECYCLE_R1.md). R1 failed despite passing its clean target-creation prerequisite. The removed sentinel was task-generated synthetic data; no user scientific file was an experiment input. Portable failure containment does not repair native closure.
 
-## Current P0 portable verification
+## Historical P0 portable verification — 2026-09-16
 
 The integrated local working tree passed **341 tests and 42 subtests**, with two
 skips because this Windows token cannot create the symbolic-link fixtures. Ruff
