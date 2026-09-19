@@ -1,0 +1,70 @@
+{
+  "date": "2026-09-19",
+  "version": "0.1.0.dev2",
+  "scope": "portable_fake_only",
+  "tested_before_release_commit": true,
+  "base_revision": "1f245312343045a7426e23f2d36fb49613f80495",
+  "checks": {
+    "locked_python": "3.12.14",
+    "pytest": {
+      "passed": 343,
+      "subtests_passed": 42,
+      "skipped": 2,
+      "skip_reason": "Windows token cannot create symlink fixtures"
+    },
+    "ruff_check": "PASS",
+    "ruff_format": "24 files already formatted",
+    "public_contracts": 6,
+    "public_schema_utf8_bytes": 19898,
+    "internal_p0_schemas": 6,
+    "actual_mcp_stdio": "six tools; structured/text parity; expected error branches; PASS",
+    "source_preflight": "PASS"
+  },
+  "review": {
+    "unknown_completion_consume_quarantine": "independent read-only review found no blocker within portable scope",
+    "legacy_compatibility": "over-limit historical requests are rejected and preserved; two regression cases added",
+    "initial_fixture_setup": "first large-parameter fixture setup errored with an unbounded generated test identifier; explicit short identifiers fixed the test setup; complete rerun passed"
+  },
+  "native_mutations_enabled": false,
+  "target_close_enabled": false,
+  "native_executor_implemented": false,
+  "historical_receipts_unchanged": true,
+  "source_hashes": {
+    ".codex-plugin/plugin.json": "85ab10d124ebd33e79dfba33c29e0886a474f2790e36d2e62dbd09cb732f7a07",
+    "mnova_adapter/execution_context.py": "a2017b724336c4cb8aec2090546d1e8673b2ad28824ab9201daa9e42b2e4056b",
+    "mnova_adapter/native_probe.py": "cf7c0c13dd4560534c2d34458d95e7ecd80f2cc80c063940d7292cd05cacc6b3",
+    "mnova_adapter/session_lifecycle.py": "4218e2f2b771426c7d287501b04cfdd659e74554d7d9e44cf66eacc2c79a7594",
+    "pyproject.toml": "e4207bde96fb1cb6150e4811a057f88b1356e30acaea38c6f0a1abf5205d38f7",
+    "scripts/check_contracts.py": "6fa9e2ac52683ac8f1377f091f92ada9730b2b6dbbc0b20e4da54672a5928950",
+    "scripts/check_release.py": "a2b2035f070f657da3b1366e9b704dd1eaf5df35cac0bb9f0121958d42fb2d54",
+    "scripts/smoke_mcp.py": "c494f173764b8296bd0ce772929fc604b6bce37dbcff9d57205817d06b56a65c",
+    "src/mnova_companion/__init__.py": "a9fb98b511721b7101db60cc502589e617ec5b4c11e2b30ac878d1d21a1343cf",
+    "src/mnova_companion/__main__.py": "ddd60a1df996b2b744c45953165711e5afe2711f5f0249f4e98875e1342411df",
+    "src/mnova_companion/artifact_store.py": "180b3861e3582e68958aa6a44a212d9ac095c7a7d0a8165f190b5b2c13352294",
+    "src/mnova_companion/contracts.py": "4d62aff76d38643acb68dee57c8d1da501247e9595f1e92f0f4c285dbbcb5521",
+    "src/mnova_companion/discovery.py": "eb0daf757d7b3a7a235ed515523dcfd9472b4f98fdae637723c8530c53a217f4",
+    "src/mnova_companion/execution.py": "d29f988af1db5843ab4355810e6a5668de1d11bf80597770098b19a8d9e109dd",
+    "src/mnova_companion/jobs.py": "bbacea31207185becfc621863ef44d0d1bcaefc838cea6cf5073fda69176e184",
+    "src/mnova_companion/server.py": "d6de5b0781f26d9c648d6ec43cf4521ac307f734e387f2643c323ca3adb2297e",
+    "src/mnova_companion/service.py": "8ea6dacebe1c017d0a3bb16b0050f4221fe632d02e7382dd299caf6113f5cabc",
+    "tests/test_artifact_store.py": "bda33f7b74c65e9a8e4ba0c1fcc9b85d420442dacdb10775f8dc55012b9e24cd",
+    "tests/test_contracts.py": "e9e4146d355c23d006d71deb506500e2c51538a89a4ebacb8f3424612dd65d12",
+    "tests/test_execution_context.py": "917286f14239709a44c717b73f3df4a0279dcc237494fc2954b6e19140b1c429",
+    "tests/test_execution_protocol.py": "5184dbb86f110ed0b7c2831d29ad1ee1c2437f1589a67aa1f4e306d9b2d184e2",
+    "tests/test_jobs.py": "bb757e40103950aa1c30fe4462722d4a4b586b54bdb715aff89d6cc9ffec8272",
+    "tests/test_native_probe.py": "c602b928dfdde4de0b17cf8b471b9d23509cbfcbdf785ea80cb08f28d103813a",
+    "tests/test_p0_execution.py": "335c8f3933b2f0f133dbe1a436f49c6404854192b7f2662a7fb8cefbc3b1c980",
+    "tests/test_service.py": "5b110dd45b11ad48d950b12ba3194ab4a030af1df4a2ed9d1f62b4e77a3ea724",
+    "tests/test_session_lifecycle.py": "86c06b307cad7b18d53d05356a6d54e9cf737e540516f9c4866442fb298a6e6c",
+    "uv.lock": "489cf62e1052bc7675227ad4e7146065ecf36111e983ff9823ef1996281ae946"
+  },
+  "not_established": [
+    "native Mnova execution or science",
+    "VM or P1 acceptance",
+    "installed package or upgrade",
+    "GitHub CI or saved cloud task",
+    "host/model delivery or benchmark",
+    "EOF/crash/OS-event lifecycle",
+    "general installer or clean-device behavior"
+  ]
+}

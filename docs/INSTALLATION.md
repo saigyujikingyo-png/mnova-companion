@@ -1,61 +1,86 @@
 # Current-device Codex preview installation
 
-This is a developer-assisted, current-device installation of source version
-`0.1.0.dev1`. It is not a general installer or a native NMR workflow release.
+Source version `0.1.0.dev2` is a developer-assisted portable preview. It includes
+fake-only P0 dispatch and job persistence. Native scientific writes and target
+close remain disabled; this is not a general installer or a native NMR release.
+An installed version requires its own package/configuration receipt.
 
-## Installed behavior
+## Runtime and plugin identity
 
-The personal Codex plugin is `mnova-companion@personal`. Its icon is the original
-asset in [assets](../assets/DESIGN.md). The installed MCP configuration starts a
-private, non-editable Python environment with `python -I -m mnova_companion`.
-The runtime lives under the current user's local application-data directory;
-it does not import the development checkout. The personal plugin source is under
-the user's `plugins/mnova-companion` directory, with a separate host-managed cache.
-The source manifest gains its concrete `.mcp.json` reference in that private copy.
-Machine-specific absolute runtime paths are never committed to this repository.
+The personal Codex plugin is `mnova-companion@personal`. Its original icon is in
+[assets](../assets/DESIGN.md). The private MCP configuration starts a non-editable
+Python environment with `python -I -m mnova_companion`; it does not import the
+checkout. The plugin source is under the user's `plugins/mnova-companion`, with a
+separate host-managed cache. Only that private source adds the concrete
+`.mcp.json` reference and machine-specific runtime/home paths.
 
-The installation uses the existing Python 3.12.14 base and locked production
-dependencies. It is independent of the Git checkout, but its virtual environment
-still depends on that Python base. Copying it to a new device is not supported.
-The runtime contains 45,991,717 bytes across 2,010 files at the time of inspection;
-this excludes the shared Python base, host cache and generated icon.
+The environment uses an existing Python 3.12 base and locked production
+dependencies. It still depends on that Python base and cannot be copied as a
+self-contained installation to a different device. Input roots default to `[]`.
+Status, help, authorized staging and registered artifacts are portable; native
+requests return an unavailable-capability result before creating a job.
 
-Input roots default to an empty list. This preview can report state, describe
-contracts and inspect registered artifacts. Native requests return an explicit
-unavailable-capability result. There is no graphical input-root selector yet.
+## Upgrade admission and preservation
 
-## Verification and use
+1. Freeze a tested source revision and build its wheel/sdist. Record their hashes
+   and check the installed source against the exact wheel, including `execution.py`.
+2. Preserve old plugin source/configuration, runtime, jobs, keys, leases, artifacts
+   and evidence. Inventory canonical old and new homes, including hidden files and
+   reparse points. Never let old and new readers share a state directory.
+3. A fresh empty versioned home is admitted only if a fresh, complete inventory
+   finds no old state/artifact files, unresolved attempts, leases or quarantine.
+   Existing records require a separate compatibility/migration review; do not use
+   an empty new home to hide unknown effects. Recheck immediately before switching.
+4. Install the wheel in a new versioned runtime such as
+   `%LOCALAPPDATA%/MnovaCompanion/runtimes/0.1.0.dev2`. Explicitly configure a distinct
+   home such as `%LOCALAPPDATA%/MnovaCompanion/profiles/0.1.0.dev2`. The server's
+   default home is not a migration mechanism. Keep the old runtime/home intact.
+5. Run installed protocol checks from outside the checkout using temporary
+   synthetic fixtures. Verify new/old canonical homes differ and all native gates
+   remain closed. This preview provides no automatic runtime migration or host
+   frontend shutdown mechanism.
 
-Installation was performed with the official personal-marketplace scaffold and
-`codex plugin add`, followed by installed/enabled inventory readback. Its cached
-icon hash matches the repository asset. From a temporary working directory, the
-installed runtime completed real MCP discovery and calls for all six tools,
-with schema validation, text/structured parity and expected error branches.
-Existing personal-plugin records and earlier marketplace entries were preserved.
-See the [installation receipt](../acceptance/installation_20260915.json).
+P0 version-2 records cannot be read by the older strict reader. Historical records
+are readable by dev2 only within the P0 wire bounds described in
+[P0_EXECUTION.md](P0_EXECUTION.md). Over-limit legacy records are conservatively
+rejected without rewriting their files. Retain originals and the old reader for
+review; rejection never authorizes deletion, re-submission or invented completion.
 
-Start a new Codex task to load the newly installed tools, then request a Mnova
-Companion status check. A model-driven call in that new task is a separate gate;
-it has not been claimed from the direct protocol test. No native process was
-started by the installation verification.
+## Official plugin switch and verification
 
-## Update, recovery and removal
+After package verification and admission, update the existing local plugin source
+and its private connection configuration. Use the official plugin-creator
+cachebuster helper, validate the source, then run
+`codex plugin add mnova-companion@personal`. This reinstalls the plugin integration;
+it does not itself replace a wheel. Do not edit host cache or registration internals.
+Preserve the existing marketplace name, source path, order and unrelated plugins.
 
-For icon, metadata or connection updates, use the official plugin-creator
-cachebuster helper on the actual local source, validate it, then run
-`codex plugin add mnova-companion@personal` again. This does not update the wheel
-in the separate non-editable runtime. A code upgrade must separately build and
-verify a new wheel, install it in a new private versioned runtime, update the
-private MCP configuration, and repeat installed-runtime protocol checks while
-retaining the old runtime for rollback. No automated runtime-upgrade flow has
-been implemented or accepted here. Do not edit host cache or registration
-internals. The initial install encountered a source
-directory mismatch: the CLI resolved `./plugins/mnova-companion` from the user
-home. Placing the prepared copy at that observed path resolved the install error;
-no marketplace source rewrite or reordering was needed.
+Re-read the installed cache manifest/configuration and invoke its exact command in
+a fresh stdio client. Check discovery, output schemas, structured/text parity and
+expected error branches for all six tools. Existing host-owned frontends may retain
+the old runtime; do not close Codex or native software to force replacement.
+Start a new Codex task for host/model acceptance. Direct installed protocol is
+separate from current-task hot reload, a model workflow or received attachments.
 
-Removal through Codex's plugin UI or `codex plugin remove mnova-companion@personal`
-removes the host integration. The separate private runtime and user state require
-their own intentional cleanup. Removal, reinstallation after removal, upgrades,
-and clean-device operation have not been tested. No public release bundle or
-double-click installer is provided by this checkpoint.
+## Rollback and removal
+
+Rollback uses the retained old runtime **and its old compatible home**, through the
+same official plugin reinstall flow. Preserve the new home and evidence as well.
+New unknown effects must still block subsequent work across rollback; do not feed
+version-2 files to the older reader or restore an old snapshot to erase them.
+A synthetic isolated rollback check proves path/reader separation, not recovery of
+an in-flight native operation. Whole-host, OS-event and clean-device rollback
+acceptance remain open.
+
+Codex plugin removal removes host integration; separate runtime/state cleanup
+requires its own explicit scope. No user data or native sessions are removed by
+this upgrade procedure. Removal/reinstallation after removal is untested.
+
+## Historical dev1 installation
+
+The [2026-09-15 receipt](../acceptance/installation_20260915.json) records the older
+`0.1.0.dev1` current-device installation and six-tool protocol checks. At that
+inspection, its private runtime held 45,991,717 bytes in 2,010 files, excluding the
+shared Python base, host cache and icon. These are historical values, not dev2
+package size or acceptance. The CLI resolved `./plugins/mnova-companion` from the
+user home; preserving that source location avoided marketplace rewrites.

@@ -76,13 +76,20 @@ retained outside public source. See the [sanitized R1 receipt](../acceptance/ses
 
 ### Attribution boundary
 
-The last known-good snapshot preceded target resolution. No independent snapshot
-separated `resolve(plugin, target_uuid)`, `closeDocument(target)`, clearing the
-target wrapper and the first fresh observation. That entire sequence is the
-unresolved failure interval, including wrapper enumeration and release during
-resolution. The call and subsequent observation returned, but this does not prove
-that the close API alone ignored its argument, nor establish a general vendor
-defect. No alternate native close or activation sequence was attempted afterward.
+The last recorded normal values were sampled before target resolution. The
+observer mixes sequential JS/Python reads and is not atomic; its local native
+wrappers are also released on scope exit. The strict unresolved interval thus
+includes its final sampling and cleanup, `resolve(plugin, target_uuid)` and its
+wrapper enumeration/release, `closeDocument(target)`, target-reference release,
+and the first fresh observation. No independent observation isolates these
+steps. The call and later observation returned, but this does not prove that
+close alone ignored its argument or establish a general vendor defect.
+`Owned document missing or ambiguous` is the harness postcondition failure,
+not a vendor exception. The later matching digest confirms sampled content,
+not observer purity. See the [subsequent interface review](INTERFACE_CONTRACT_REVIEW.md).
+The original sanitized receipt remains a historical record; this paragraph
+clarifies its fault-interval boundary without rewriting its recorded outcome.
+No alternate native close or activation sequence was attempted afterward.
 
 ### Containment and next gate
 
@@ -100,4 +107,7 @@ technical gate is a documented and independently testable relationship between
 session documents, document windows, wrapper ownership and exact-target closure.
 Changing the active document and retrying would not resolve that contract. Any
 replacement experiment needs isolated failure intervals and its own acceptance;
-the failed sequence must not be replayed. No vendor support message was sent.
+the failed sequence must not be replayed. No vendor support message was sent as
+part of the experiment. During the later documentation-only review, the owner
+authorized a [separate technical clarification request](VENDOR_INTERFACE_QUESTIONS.md);
+its sender-side readback passed and its technical reply is pending.

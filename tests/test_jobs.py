@@ -1,10 +1,50 @@
 import concurrent.futures
 import subprocess
 import sys
+import time
+import uuid
 
 import pytest
 
+from mnova_companion.execution import PHASES, BuildProfile, ExecutorHandshake, Receipt
 from mnova_companion.jobs import JobConflict, JobStore
+
+
+def prepare(store, key="once"):
+    profile = BuildProfile(
+        profile_id="fake", build_fingerprint="a" * 64, mode="portable_fake", operations=["probe"]
+    )
+    handshake = ExecutorHandshake(
+        executor_session_id=uuid.uuid4().hex,
+        process_instance_id=uuid.uuid4().hex,
+        build_profile_id="fake",
+        build_fingerprint="a" * 64,
+        isolation_id="test",
+        mode="portable_fake",
+    )
+    job = store.submit(
+        key, {"operation": "probe", "document_id": "fixture", "expected_revision": 1}
+    )
+    dispatch = store.prepare_job(
+        job["job_id"], profile=profile, handshake=handshake, deadline=time.time() + 60
+    )
+    return dispatch, profile, handshake
+
+
+def dispatch_and_finish(store, dispatch, profile, handshake):
+    assert store.dispatch_once(dispatch, profile=profile, handshake=handshake, observed_revision=1)
+    for sequence, phase in enumerate(PHASES, 1):
+        store.record_receipt(
+            Receipt(
+                identity=dispatch.identity,
+                sequence=sequence,
+                phase=phase,
+                effects="known",
+                cleanup="complete",
+                result={"fake_outcome": "completed"},
+            )
+        )
+    return store.complete(dispatch.identity)
 
 
 def test_idempotency_survives_restart_and_rejects_changed_request(tmp_path):
@@ -16,46 +56,80 @@ def test_idempotency_survives_restart_and_rejects_changed_request(tmp_path):
 
 
 def test_only_one_native_job_claimed_across_stores(tmp_path):
-    store = JobStore(tmp_path)
-    jobs = [store.submit(f"r-{n}", {"operation": "probe"}) for n in range(2)]
+    def claim(index):
+        try:
+            prepare(JobStore(tmp_path), f"r-{index}")
+            return True
+        except JobConflict:
+            return False
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-        claims = list(pool.map(lambda j: JobStore(tmp_path).claim(j["job_id"]), jobs))
+        claims = list(pool.map(claim, range(2)))
     assert sum(claims) == 1
-    assert sorted(store.read(j["job_id"])["state"] for j in jobs) == ["queued", "running"]
+    store = JobStore(tmp_path)
+    assert sorted(store.read(p.stem)["state"] for p in store.records.glob("*.json")) == [
+        "queued",
+        "running",
+    ]
 
 
 def test_unknown_outcome_retains_lease_and_does_not_repeat(tmp_path):
     store = JobStore(tmp_path)
-    job = store.submit("once", {"operation": "save"})
-    assert store.claim(job["job_id"])
-    store.mark_unknown(job["job_id"], "No receipt after native launch")
-    assert not JobStore(tmp_path).claim(job["job_id"])
-    other = store.submit("next", {"operation": "probe"})
-    assert not store.claim(other["job_id"])
-    assert store.submit("once", {"operation": "save"})["state"] == "outcome_unknown"
+    dispatch, profile, handshake = prepare(store)
+    assert store.dispatch_once(dispatch, profile=profile, handshake=handshake, observed_revision=1)
+    store.mark_unknown(dispatch.identity, "No receipt after fake dispatch")
+    assert not JobStore(tmp_path).dispatch_once(
+        dispatch, profile=profile, handshake=handshake, observed_revision=1
+    )
+    with pytest.raises(JobConflict):
+        prepare(store, "new-key")
+    with pytest.raises(JobConflict):
+        store.complete(dispatch.identity)
+    assert store.submit("once", dispatch.request)["state"] == "outcome_unknown"
+    assert (tmp_path / "native.lock").exists()
 
 
 def test_cancel_queued_and_running_have_different_semantics(tmp_path):
     store = JobStore(tmp_path)
     queued = store.submit("queued", {"operation": "probe"})
     assert store.cancel(queued["job_id"])["state"] == "cancelled"
-    assert not store.claim(queued["job_id"])
-    running = store.submit("running", {"operation": "save"})
-    assert store.claim(running["job_id"])
-    assert store.cancel(running["job_id"])["state"] == "cancel_requested"
+    dispatch, profile, handshake = prepare(store, "running")
+    assert store.dispatch_once(dispatch, profile=profile, handshake=handshake, observed_revision=1)
+    assert store.cancel(dispatch.identity.job_id)["state"] == "cancel_requested"
     assert (tmp_path / "native.lock").exists()
-    store.complete(running["job_id"], {"native_outcome": "completed"})
-    assert store.read(running["job_id"])["state"] == "succeeded"
+    for sequence, phase in enumerate(PHASES, 1):
+        store.record_receipt(
+            Receipt(
+                identity=dispatch.identity,
+                sequence=sequence,
+                phase=phase,
+                effects="known",
+                cleanup="complete",
+                result={"fake": True},
+            )
+        )
+    store.complete(dispatch.identity)
+    assert store.read(dispatch.identity.job_id)["state"] == "succeeded"
     assert not (tmp_path / "native.lock").exists()
 
 
 def test_terminal_job_is_not_overwritten_and_ids_cannot_escape(tmp_path):
     store = JobStore(tmp_path)
-    job = store.submit("good", {"operation": "probe"})
-    assert store.claim(job["job_id"])
-    store.complete(job["job_id"], {"native_outcome": "completed"})
+    dispatch, profile, handshake = prepare(store, "good")
+    result = dispatch_and_finish(store, dispatch, profile, handshake)
+    assert store.complete(dispatch.identity) == result
     with pytest.raises(JobConflict):
-        store.complete(job["job_id"], {"native_outcome": "different"})
+        store.record_receipt(
+            Receipt(
+                identity=dispatch.identity,
+                sequence=4,
+                phase="post_scope_verified",
+                effects="known",
+                cleanup="complete",
+                result={"fake_outcome": "different"},
+            )
+        )
+    assert store.read(dispatch.identity.job_id)["result"] == {"fake_outcome": "completed"}
     with pytest.raises(ValueError):
         store.read("../../private")
 
