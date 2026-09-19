@@ -242,7 +242,7 @@ class Service:
                     if job["state"] == "cancelled"
                     else "not_requested"
                 ),
-                outcome_certainty="unknown" if job["state"] == "outcome_unknown" else "known",
+                outcome_certainty=self.jobs.outcome_certainty(job),
             )
             return self._output(tool, request_id, data=data, summary="Persisted job observation")
         return self._artifact_call(args, request_id)

@@ -3,9 +3,17 @@
 Status: **R0 PASSED BOUNDED; R1 FAILED; NATIVE WRITES DISABLED**.
 Date: 2026-09-16. Shared baseline: Chembridge 2026-09-14.1.
 
+Current route: **C3; P0 PORTABLE IMPLEMENTATION APPROVED**. The owner confirmed
+the hub's C3 architecture after offline F analysis. [P0](P0_EXECUTION.md) implements
+the portable execution boundary with fake effects; native experiments and writes
+remain disabled. The C1 assessment below is retained as historical research,
+including unresolved native contracts; its next-step order is superseded by C3/P0
+and the [current status](STATUS.md).
+
 The user approved development after the icon, installation and architecture
-review. This phase repaired zero-page observation, established a visible owned
-synthetic document with genuine dirty state, and ran one bounded target-close
+review. The previous implementation phase repaired zero-page observation,
+established a visible owned synthetic document with genuine dirty state,
+and ran one bounded target-close
 experiment. That sequence removed the protected synthetic sentinel while leaving
 the intended target present. Independent readback confirmed the failure. All
 native writes stopped; the close route now has its own disabled gate.
@@ -17,7 +25,7 @@ native writes stopped; the close route now has its own disabled gate.
 | Icon and local host wiring | READY on this device | Icon, enabled personal plugin and non-editable runtime were verified independently of the checkout. Preserve the installed core. |
 | Portable contracts/files/jobs | READY within tested scope | Six typed tools, durable jobs and staging/artifact checks remain useful infrastructure. Tests do not prove native workflows. |
 | Native R0 prerequisites | PASSED BOUNDED | Main-window creation, unique ownership, synthetic attachment and a true dirty edit passed separate readback on the tested build. |
-| Native lifetime R1 | FAILED | Clean target creation passed; close did not remove the target and the protected synthetic sentinel disappeared. Keep all native writes and the dedicated close path disabled. |
+| Native lifetime R1 | FAILED | Clean target creation passed; the close sequence did not remove the target and the protected synthetic sentinel disappeared. Keep all native writes and the dedicated close path disabled. |
 | Scientific workflow R2/R3 | BLOCKED | Native save/reopen, raw-data processing, integrals and exports are not accepted. |
 | Cloud implementation checks | READY at recorded revisions | Reuse the existing environment. Record exact checkout results in [cloud evidence](CLOUD_SETUP.md); later code revisions need fresh checks. |
 | Ordinary-user distribution | PARTIAL | Current-device installation works without a checkout, but its private venv uses the existing Python base. No general installer, update/removal or clean-device acceptance. |
@@ -48,12 +56,16 @@ After the target-close sequence, the sentinel was absent and the target remained
 All three original document rows and the older synthetic buffer were preserved.
 Only task-generated synthetic/blank documents were experiment inputs.
 
-The failure interval includes target resolution and wrapper enumeration/release,
-`closeDocument(target)`, clearing the target reference and fresh observation.
-There was no intermediate state read to isolate those steps. Do not conclude
-that the close API always closes the active document or that a vendor defect has
-been proven. The postcondition detected the failed protection; it did not prevent
-removal. No native retry or cleanup followed it.
+The strict failure interval starts at the last values sampled by the preceding
+observer and its scope cleanup. It includes target resolution and wrapper
+enumeration/release, `closeDocument(target)`, clearing the target reference and
+fresh observation. The snapshots mix sequential JS/Python reads and are not
+atomic. Their saved values do not prove that scope cleanup had no side effects.
+There was no independent read isolating those steps. Do not conclude that the
+close API always closes the active document or that a vendor defect has been
+proven. The postcondition detected the failed protection; it did not prevent
+removal. No native retry or cleanup followed it. See the updated
+[interface and failure assessment](INTERFACE_CONTRACT_REVIEW.md).
 
 The installed documentation declares `newDocument`, `documents` and
 `closeDocument(aDoc)`, but does not settle Python wrapper return-value ownership,
@@ -80,34 +92,121 @@ The per-operation intent is flushed and fsynced; progress-stage JSON is atomical
 replaced but is not separately fsynced. Do not describe every progress marker as
 power-loss durable. No automatic cleanup is authorized by a failed postcondition.
 
-## 4. Next technical gate
+## 4. Candidate route C1
 
-Read-only inspection after R1 found no Python closing example or documented
-session-to-window mapping. The installed JS reference describes
-`Document.close()` as closing the document window; the vendor
-`dbImportFilesByLocation.qs` example obtains a main-window document before using
-that method. This is evidence for investigating the window relationship, not
-permission to substitute JS close for the failed session-target sequence.
-Cancellation, prompt handling and wrapper ownership remain unspecified. No
-documented extra Boolean argument or force-close option was found.
+### 4.1 Architecture decision proposed for confirmation
 
-1. Establish documented session/window ownership and close semantics for the
-   installed binding, with enough evidence to select an exact-target mechanism.
-   Static source/documentation inspection comes before another native experiment.
-2. Design an isolated diagnostic that can distinguish resolution, invocation,
-   wrapper release and later observation. Retain process-instance fencing,
-   exclusive intents, exact inventories and independent post-scope readback.
-3. Consider an independently isolated Console executor only if its automation
-   licence, invocation, process ownership, non-forwarding behavior, output and
-   exit cleanup can be verified. The [Console product page](https://mestrelab.com/mnova-console)
-   establishes availability, not those guarantees. A launcher PID alone is not
-   isolation. Do not add Gears, a resident service or another model provider by
-   default. No vendor support message has been sent; sending one needs explicit
-   authorization.
+Keep the existing Python core and thin host adapters. Prefer a supported Python
+native adapter. Select its execution environment only after lifecycle and
+isolation contracts can be stated for an exact build. Native handles stay inside
+their documented scope; the core receives validated scalar observations,
+operation outcomes and materialized artifacts. A UUID identifies a document but
+does not confer memory ownership or prove a GUI window exists.
 
-Do not reactivate the failed close path, switch the active document and retry,
-re-register an existing document or weaken the sentinel checks to obtain a pass.
-No delivery estimate is credible until the native ownership contract is resolved.
+```mermaid
+flowchart LR
+    H[Agent host and thin adapter] --> C[Existing MCP core and typed jobs]
+    C --> G[Version and capability gates]
+    G --> N[One supported Python native executor]
+    N --> O[Validated observations and operation outcomes]
+    O --> C
+    N --> A[Native files and verified exports]
+    A --> D[Artifact registry and host delivery]
+```
+
+This describes component responsibilities, not implemented native capabilities.
+No public tools, resident service, hosted relay or model provider are added in
+this phase. The six existing tools and structured result contracts remain the
+public boundary.
+
+### 4.2 Executor selection and difficulty
+
+| Candidate | Assessment | Selection prerequisite |
+| --- | --- | --- |
+| A: Python adapter with supported GUI document/window lifecycle | Preferred continuation of bounded R0 evidence; high uncertainty in target mapping and wrapper lifetime. | Version-specific ownership, exact-target close/cancel/completion, safe observation and a proven isolated diagnostic environment. |
+| B: standalone NMR Python or Console worker | Conditional alternative if it supports editable native artifacts; very high discovery and integration uncertainty. | Actual entrypoint/sample, compatible licence, no GUI forwarding, owned process/configuration, outputs and exit cleanup. Product availability is insufficient. |
+| C: legacy JS window bridge | Narrow compatibility/diagnostic candidate only; additional cross-language lifetime and maintenance risk. | Vendor-supported scalar boundary and exact lifecycle; independent acceptance. No automatic substitution for the failed close. |
+
+The [official JS manual](https://mestrelab.com/downloads/mnova/manuals/latest/js-overview.html)
+marks the engine deprecated and recommends Python. This weighs against a full JS
+rewrite. `JSPlugin.evaluate` exposes string results, not a documented native
+handle channel. The [GUI command-line description](https://mestrelab.com/downloads/mnova/manuals/latest/js-command-line.html)
+describes forwarding into an existing instance; `-w` cannot qualify an executor
+as isolated.
+
+Candidates are evaluated, not tried automatically in sequence. If A cannot meet
+its contract, evaluate B on documentation before implementing an executor. If
+neither has a supported contract, retain the preview and native-write block. Do
+not select a route by counting portable tests or by making a visible action work
+once. No credible delivery estimate exists before this decision.
+
+### 4.3 Contract closure before implementation
+
+The [interface matrix](INTERFACE_CONTRACT_REVIEW.md) records what was obtained
+and what is missing. The [vendor clarification request](VENDOR_INTERFACE_QUESTIONS.md)
+asks for four version-scoped groups: object/buffer lifetime; exact document and
+window close; safe observation/thread/events; independent execution.
+
+For each answer, record source, applicable build, preconditions, invalidation,
+failure/cancel outcome, completion criterion and an example if available.
+Distinguish an explicit unsupported operation from an unanswered question.
+General pybind11 guidance and an unversioned example cannot fill a Mnova-specific
+contract. Private vendor answers are not public documentation unless publication
+is authorized.
+
+### 4.4 Future implementation sequence after confirmation
+
+These are proposed work packages; none has begun in this phase.
+
+| Package | Work and deliverable | Exit criterion |
+| --- | --- | --- |
+| P0: contract and executor decision | Incorporate authoritative answers; select one exact supported lifecycle, observer and executor. | All prerequisites for the selected experiment resolved; scientific/host gaps listed separately. Owner confirms the route. |
+| P1: portable evidence model | Extend the developer-only harness with explicit observation phases, process-instance identity, operation state and capability metadata. Keep runtime native dispatch disabled. | Focused tests verify at-most-one invocation, unknown-outcome quarantine, scope ordering and no same/new-ID replay. No native claim. |
+| P2: isolated observer qualification | Establish independent session/configuration; start with supported scalar identity reads, then separately qualify page/item and buffer observations. | Observation-only and resolution/release controls preserve protected state through independent post-scope checks. |
+| P3: exact-target lifecycle | Create two fresh disposable documents through the same supported route; record window/UUID mapping and genuine dirty sentinel. Run the selected close once under its documented preconditions. | Only target disappears; protected dirty state, data, selection and active context remain; later independent read succeeds without delayed failure. |
+| P4: native save and reopen | Use accepted ownership/close paths to create and reopen a native artifact in a fresh accepted session. | File bytes/hash and scientific/annotation state match; editability verified. This is R2, separate from P3. |
+| P5: scientific and product integration | One bounded 1D workflow, then typed job dispatch, delivery, installation and host/model checks. | Remaining acceptance gates below pass individually; advertise only passing capabilities. |
+
+P1 is code development and requires the later explicit start instruction. Route
+confirmation alone in this planning phase does not start P1. P2/P3 also require
+the applicable native prerequisites; development approval does not turn
+unresolved technical conditions into a pass.
+
+### 4.5 Minimum native diagnostic gates
+
+1. **G0, contract and isolation:** establish supported thread/entrypoint,
+   document/window targeting, parent/alias lifetime and close outcome semantics.
+   Verify a distinct process instance and session/configuration with no forwarding
+   into the user's open workspace. PID or launcher exit alone is insufficient.
+2. **G1, observer controls:** sample only documented safe scalars first. Separate
+   getter evaluation, enumeration and scope release. Then qualify richer reads
+   and buffer copying while parents remain valid. A successful conversion does
+   not establish that a view may outlive its source.
+3. **G2, target control:** use fresh task-created fixtures in the accepted
+   environment, identical creation routes and explicit identity/window mapping.
+   Record active state and any documented lock-stack operations. Do not recover
+   unknown lock state using speculative unlocks.
+4. **G3, one close:** record pre-call intent, return observation, permitted wrapper
+   release and supported completion evidence separately. A None return is not
+   completion. Do not install document event listeners until payload, timing and
+   cleanup are supported. `processEvents()` is not a passive completion barrier.
+5. **G4, independent reconciliation:** after the entire operation scope exits,
+   confirm inventory, window presence, protected dirty state, data and selection
+   through an accepted independent observer; include a later bounded observation.
+   Record residual deferred-event uncertainty honestly.
+
+Observation controls and exact-target close use distinct fresh experiments; they
+do not replay the failed request or clean its remaining target. Unchanged digest
+checks apply only to sampled content. Python markers or debugger breakpoints may
+narrow a sequence without distinguishing C++ destruction inside a call; vendor
+instrumentation may still be necessary.
+
+On unexpected removal, conflicting observations, unknown completion, a prompt
+outside the supported contract or process failure: quarantine the operation,
+retain evidence, disable that route and reconcile using only an accepted safe
+observer. No repeat close, active-document switch, re-registration, force close,
+garbage-collection workaround, global shutdown or automatic cleanup is a recovery
+step. Supported shutdown of a disposable worker is itself a contract to validate.
 
 ## 5. Remaining acceptance order
 

@@ -78,11 +78,25 @@ def test_help_contracts_and_unknown_job(tmp_path):
 def test_failed_job_can_be_successfully_queried(tmp_path):
     service = Service(tmp_path)
     job = service.jobs.submit("test", {"operation": "probe"})
-    assert service.jobs.claim(job["job_id"])
-    service.jobs.complete(job["job_id"], {"native_outcome": "failed"}, failed=True)
+    # A historical terminal observation is readable without fabricating native evidence.
+    job.update(state="failed", phase="completed", result={"native_outcome": "failed"})
+    (service.jobs.records / f"{job['job_id']}.json").write_text(json.dumps(job))
     result = checked(service, "mnova_job", {"job_id": job["job_id"]})
     assert not result.is_error
     assert result.structured_content["data"]["state"] == "failed"
+
+
+def test_running_legacy_job_does_not_claim_known_effects_or_reconcile_itself(tmp_path):
+    service = Service(tmp_path)
+    job = service.jobs.submit("uncertain", {"operation": "probe"})
+    job.update(state="running", phase="claimed")
+    path = service.jobs.records / f"{job['job_id']}.json"
+    path.write_text(json.dumps(job))
+    before = path.read_bytes()
+    result = checked(service, "mnova_job", {"job_id": job["job_id"], "action": "reconcile"})
+    assert result.structured_content["data"]["outcome_certainty"] == "unknown"
+    assert result.structured_content["data"]["state"] == "running"
+    assert path.read_bytes() == before
 
 
 def test_corrupt_job_returns_structured_error_with_known_job(tmp_path):

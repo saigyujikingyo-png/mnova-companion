@@ -1,0 +1,57 @@
+{
+  "date": "2026-09-16",
+  "stage": "C3/P0",
+  "scope": "portable_fake_only",
+  "base_head": "7f09b68fb1f6e4f68528c0e827e2e12dbd5e61f0",
+  "working_tree_changes": true,
+  "published": false,
+  "installed_runtime_updated": false,
+  "native_mutations_enabled": false,
+  "target_close_enabled": false,
+  "public_tool_count": 6,
+  "public_contract_version": "1.0",
+  "public_schema_bytes": 19898,
+  "internal_schema_count": 6,
+  "checks": {
+    "lint": {
+      "exit_code": 0,
+      "summary": "All checks passed!"
+    },
+    "format": {
+      "exit_code": 0,
+      "summary": "24 files already formatted"
+    },
+    "tests": {
+      "exit_code": 0,
+      "summary": "........s..................... [  8%]\r\n......................................................s................. [ 29%]\r\n........................................................................ [ 50%]\r\n........................................................................ [ 71%]\r\n........................................................................ [ 92%]\r\n.........................                                                [100%]\r\n=========================== short test summary info ===========================\r\nSKIPPED [1] tests\\test_artifact_store.py:279: Creating a symlink is unavailable: 1314\r\nSKIPPED [1] tests\\test_execution_protocol.py:164: OS token cannot create the symlink fixture\r\n341 passed, 2 skipped, 42 subtests passed in 7.45s"
+    },
+    "schemas": {
+      "exit_code": 0,
+      "summary": "PASS: 6 tool contracts; 19898 UTF-8 schema bytes (not billing tokens).\r\nPASS: 6 internal P0 schemas; fake execution only, no added MCP tools.\r\nScope: declared contracts only; run tests and smoke_mcp for result/transport coverage."
+    },
+    "mcp": {
+      "exit_code": 0,
+      "summary": "PASS: actual MCP stdio subprocess, 6 tools, structured/text parity and error branches.\r\nScope: protocol only; not a native or host-model acceptance test."
+    },
+    "release": {
+      "exit_code": 0,
+      "summary": "PASS: tracked development source manifest/privacy checks.\r\nScope: source preflight only; no native, installed-host or stable-release claim."
+    }
+  },
+  "source_sha256": {
+    "src/mnova_companion/execution.py": "d29f988af1db5843ab4355810e6a5668de1d11bf80597770098b19a8d9e109dd",
+    "src/mnova_companion/jobs.py": "bbacea31207185becfc621863ef44d0d1bcaefc838cea6cf5073fda69176e184",
+    "src/mnova_companion/service.py": "8ea6dacebe1c017d0a3bb16b0050f4221fe632d02e7382dd299caf6113f5cabc",
+    "tests/test_jobs.py": "bb757e40103950aa1c30fe4462722d4a4b586b54bdb715aff89d6cc9ffec8272",
+    "tests/test_service.py": "5b110dd45b11ad48d950b12ba3194ab4a030af1df4a2ed9d1f62b4e77a3ea724",
+    "tests/test_p0_execution.py": "3ca2d2198a0bad2af5ba55939fcb4a2bf94b6c0e9100ee85105a4b9a57bc5a83",
+    "tests/test_execution_protocol.py": "5184dbb86f110ed0b7c2831d29ad1ee1c2437f1589a67aa1f4e306d9b2d184e2",
+    "scripts/check_contracts.py": "6fa9e2ac52683ac8f1377f091f92ada9730b2b6dbbc0b20e4da54672a5928950",
+    "mnova_adapter/session_lifecycle.py": "4218e2f2b771426c7d287501b04cfdd659e74554d7d9e44cf66eacc2c79a7594"
+  },
+  "limitations": [
+    "Two symlink tests skipped due to Windows privilege; native isolation is unverified",
+    "Trusted fake witnesses are not native attestation",
+    "No power-loss, cloud, installed-host or release acceptance"
+  ]
+}
